@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, Square, User } from 'lucide-react';
+import { ArrowUp, Square, User, Plus } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -23,6 +23,7 @@ export function Chat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
@@ -32,6 +33,15 @@ export function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      const newHeight = Math.min(textarea.scrollHeight, 200);
+      textarea.style.height = `${newHeight}px`;
+    }
+  }, [input]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -131,11 +141,25 @@ export function Chat() {
     }
   };
 
+  const startNewConversation = () => {
+    setMessages([]);
+    setInput('');
+  };
+
   return (
     <div className="min-h-screen flex justify-center relative">
       <ShootingStars />
       <StarsBackground />
       <div className="w-full max-w-[920px] flex flex-col h-screen py-8 px-4 relative z-10">
+        {/* New Conversation Button */}
+        <Button
+          onClick={startNewConversation}
+          className="absolute top-8 right-4 h-10 w-10 rounded-lg"
+          variant="outline"
+        >
+          <Plus className="h-5 w-5" />
+        </Button>
+
         {/* Header */}
         <div className="flex flex-col items-center mb-8 space-y-4">
           <Badge variant="outline" className="text-sm px-4 py-1">
@@ -178,26 +202,30 @@ export function Chat() {
                     components={{
                       code: ({ node, inline, className, children, ...props }: any) => (
                         inline ? (
-                          <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props}>
+                          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold" {...props}>
                             {children}
                           </code>
                         ) : (
-                          <code className="block bg-muted p-4 rounded-lg overflow-x-auto text-sm" {...props}>
-                            {children}
-                          </code>
+                          <pre className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted p-4">
+                            <code className="relative rounded font-mono text-sm" {...props}>
+                              {children}
+                            </code>
+                          </pre>
                         )
                       ),
-                      p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                      ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
-                      ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
-                      li: ({ children }) => <li className="ml-2">{children}</li>,
-                      h1: ({ children }) => <h1 className="text-2xl font-bold mb-2">{children}</h1>,
-                      h2: ({ children }) => <h2 className="text-xl font-bold mb-2">{children}</h2>,
-                      h3: ({ children }) => <h3 className="text-lg font-bold mb-2">{children}</h3>,
-                      strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                      p: ({ children }) => <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>,
+                      ul: ({ children }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2">{children}</ul>,
+                      ol: ({ children }) => <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">{children}</ol>,
+                      li: ({ children }) => <li>{children}</li>,
+                      h1: ({ children }) => <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{children}</h1>,
+                      h2: ({ children }) => <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">{children}</h2>,
+                      h3: ({ children }) => <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{children}</h3>,
+                      h4: ({ children }) => <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{children}</h4>,
+                      blockquote: ({ children }) => <blockquote className="mt-6 border-l-2 pl-6 italic">{children}</blockquote>,
+                      strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
                       em: ({ children }) => <em className="italic">{children}</em>,
                       a: ({ href, children }) => (
-                        <a href={href} className="text-primary underline" target="_blank" rel="noopener noreferrer">
+                        <a href={href} className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener noreferrer">
                           {children}
                         </a>
                       ),
@@ -221,11 +249,12 @@ export function Chat() {
         <form onSubmit={handleSubmit} className="relative">
           <div className="relative border border-input rounded-lg bg-background flex items-center">
             <Textarea
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Mesajınızı yazın..."
-              className="resize-none border-0 px-6 py-4 pr-16 focus-visible:ring-0 focus-visible:ring-offset-0 flex items-center"
-              rows={3}
+              className="resize-none border-0 px-6 py-4 pr-16 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[40px] max-h-[200px]"
+              rows={1}
               disabled={isLoading}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -240,7 +269,7 @@ export function Chat() {
               disabled={!input.trim() && !isLoading}
               className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg"
             >
-              {isLoading ? <Square className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+              {isLoading ? <Square className="h-4 w-4" /> : <ArrowUp className="h-4 w-4" />}
             </Button>
           </div>
         </form>

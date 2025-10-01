@@ -5,10 +5,18 @@ export const runtime = 'edge';
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
+  const currentTime = new Date().toLocaleString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    dateStyle: 'full',
+    timeStyle: 'short'
+  });
+
   const result = streamText({
     model: 'openai/gpt-4o-mini',
     messages,
-    system: 'Sen Yapı Kredi Portföy için yardımcı bir yapay zeka asistanısın. Müşterilere nazik, profesyonel ve bilgilendirici yanıtlar veriyorsun.',
+    system: `Sen Yapı Kredi Portföy için yardımcı bir yapay zeka asistanısın. Müşterilere nazik, profesyonel ve bilgilendirici yanıtlar veriyorsun.
+
+Şu anki tarih ve saat: ${currentTime}`,
   });
 
   const encoder = new TextEncoder();
