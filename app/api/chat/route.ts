@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const isNearFinalStep = conversationLength >= 14; // ~7-8 exchanges
 
   const result = streamObject({
-    model: 'xai/grok-4-fast-non-reasoning',
+    model: 'openai/gpt-4.1-mini',
     schema: conversationSchema,
     messages: recentMessages,
     system: `# Yapı Kredi Portföy Müşteri Asistanı
@@ -31,7 +31,7 @@ Tarih: ${currentTime} | Dil: Türkçe | Ton: Nazik ve profesyonel
 8 aşamalı yatırım profili belirleme. Her step'te kullanıcıya soru sor, previousAnswers'da biriktir, schema'ya uygun JSON döndür.
 
 ## STEPS (Kısa)
-1. Giriş: "Hazır mısınız?" → ["Evet, başlayalım!", "Daha sonra"]
+1. Giriş: Nazik dil ile süreci tanıt "Hazır mısınız?" → ["Evet, başlayalım!", "Daha sonra"]
 2. Vade: Ne kadar uzun vadeli? → ["1 yıldan az", "1-3 yıl", "3-5 yıl", "5 yıl+"]
 3. Ürün: Tercih? → ["Yatırım Fonu", "Altın", "Mevduat", "Döviz", "Hisse Senedi", "Karma"]
 4. Nitelikli: Varlık 1M TL+ mı? → ["Evet", "Hayır", "Emin değilim"]
@@ -49,7 +49,7 @@ Tarih: ${currentTime} | Dil: Türkçe | Ton: Nazik ve profesyonel
 1. previousAnswers'ı her step'te tut
 2. Step 8'de: risk belirle, getiriye göre ilk 2 fon seç, ilgi alanına göre 3. fon seç
 3. Kullanıcı "Daha sonra" derse isComplete: true yap${isNearFinalStep ? `
-
+4. Kullanıcı rastgele soru sorarsa nazikçe cevapla ve akışa geri döndür.
 ## FON VERİTABANI
 ${JSON.stringify(mockFunds, null, 2)}
 
