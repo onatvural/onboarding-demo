@@ -72,6 +72,32 @@ export function Chat() {
     }
   }, [input]);
 
+  // Auto-focus input on keyboard typing
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Skip if dialog is open or loading
+      if (investmentDialogOpen || isLoading) return;
+
+      // Skip if input is already focused
+      if (document.activeElement === textareaRef.current) return;
+
+      // Skip if modifier keys are pressed
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      // Skip special keys
+      const specialKeys = ['Tab', 'Escape', 'Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Delete', 'Home', 'End', 'PageUp', 'PageDown'];
+      if (specialKeys.includes(e.key) || e.key.startsWith('F')) return;
+
+      // Focus input for printable characters
+      if (e.key.length === 1 && textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [investmentDialogOpen, isLoading]);
+
   const handleStreamingRequest = async (userMessage: string) => {
     setIsLoading(true);
     const controller = new AbortController();
@@ -230,11 +256,11 @@ export function Chat() {
     <div className="min-h-screen flex justify-center relative">
       <ShootingStars />
       <StarsBackground />
-      <div className="w-full max-w-[920px] flex flex-col h-screen py-8 px-4 relative z-10">
+      <div className="w-full max-w-[920px] flex flex-col h-screen py-2 sm:py-8 px-4 relative z-10">
         {/* Back Button */}
         <Link href="/">
           <Button
-            className="absolute top-8 left-4 h-10 w-10 rounded-lg"
+            className="absolute top-2 sm:top-8 left-4 h-10 w-10 rounded-lg"
             variant="outline"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -244,17 +270,17 @@ export function Chat() {
         {/* New Conversation Button */}
         <Button
           onClick={startNewConversation}
-          className="absolute top-8 right-4 h-10 w-10 rounded-lg"
+          className="absolute top-2 sm:top-8 right-4 h-10 w-10 rounded-lg"
           variant="outline"
         >
           <Plus className="h-5 w-5" />
         </Button>
 
         {/* Header */}
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-4 sm:mb-8">
           <TextGenerateEffect
             words="Hoş Geldiniz!"
-            className="text-3xl text-muted-foreground text-center mt-0"
+            className="text-2xl sm:text-3xl text-muted-foreground text-center mt-0"
             duration={0.3}
             onComplete={() => {
               setTimeout(() => {
@@ -265,7 +291,7 @@ export function Chat() {
           {showSubtitle && (
             <TextGenerateEffect
               words="Size bugün nasıl yardımcı olabilirim?"
-              className="text-base font-normal text-muted-foreground text-center mt-0"
+              className="text-sm sm:text-base font-normal text-muted-foreground text-center mt-0"
               duration={0.3}
               onComplete={() => {
                 if (!hasAutoStarted.current && messages.length === 0) {
@@ -278,7 +304,7 @@ export function Chat() {
         </div>
 
         {/* Messages Thread */}
-        <div className="flex-1 overflow-y-auto mb-4 mt-8 space-y-6 pr-2 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto mb-2 sm:mb-4 mt-2 sm:mt-8 space-y-6 pr-2 custom-scrollbar">
           {messages.map((message, index) => (
             <div key={message.id}>
               <div
@@ -459,7 +485,7 @@ export function Chat() {
         </div>
 
         {/* Input Area */}
-        <form onSubmit={handleSubmit} className="relative mb-2">
+        <form onSubmit={handleSubmit} className="relative mb-1 sm:mb-2">
           <div className="relative border border-input rounded-lg bg-background flex items-center">
             <Textarea
               ref={textareaRef}
