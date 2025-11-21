@@ -87,6 +87,70 @@
   }
 }
 
+/* Chat Font */
+.google-sans-flex {
+  font-family: "Google Sans Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 350;
+  font-style: normal;
+  font-size: 17px;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "ROND" 0;
+}
+
+/* Bot Avatar Animations */
+@keyframes particleSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dış katman: Saat yönünde çok yavaş döner (20 saniye) */
+.particle-outer {
+  transform-origin: 50% 50%;
+  animation: particleSpin 20s linear infinite;
+}
+
+/* İç katman: Saat yönünün tersine biraz daha hızlı döner (15 saniye) */
+.particle-inner {
+  transform-origin: 50% 50%;
+  animation: particleSpin 15s linear infinite reverse;
+}
+
+/* Thinking State (Nabız/Pulse Modu) */
+@keyframes pulseBreath {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+}
+
+svg.thinking {
+  animation: pulseBreath 1.5s ease-in-out infinite;
+}
+
+svg.thinking .particle-outer {
+  animation-duration: 8s;
+}
+
+svg.thinking .particle-inner {
+  animation-duration: 5s;
+}
+
 /* Custom Scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;

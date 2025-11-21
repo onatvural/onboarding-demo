@@ -1,10 +1,12 @@
 import { z } from 'zod';
 
 export const conversationSchema = z.object({
-  step: z.number().min(1).max(8),
+  step: z.number().min(0).max(4), // Changed from max(9) to max(4) for new 5-step flow
+  showForm: z.boolean().default(false), // NEW: Triggers static form rendering
   text: z.string(),
   buttons: z.array(z.string()).optional(),
   previousAnswers: z.object({
+    isim: z.string().optional(),
     vade: z.string().optional(),
     urun: z.string().optional(),
     nitelikli: z.boolean().optional(),

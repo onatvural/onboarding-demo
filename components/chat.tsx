@@ -15,13 +15,16 @@ import {
 import { ArrowUp, Square, User, Plus, ExternalLink, ArrowLeft } from 'lucide-react';
 import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { BotIcon } from '@/components/bot-icon';
 import { BotIconAnimated } from '@/components/bot-icon-animated';
+import { FundChart } from '@/components/fund-chart';
 import { ShootingStars } from '@/components/ui/shooting-stars';
 import { StarsBackground } from '@/components/ui/stars-background';
+import { OnboardingForm } from '@/components/onboarding-form';
+import { Spinner } from '@/components/ui/spinner';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import type { ConversationObject } from '@/lib/schemas';
 import { GeistMono } from 'geist/font/mono';
@@ -37,9 +40,9 @@ export function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [investmentDialogOpen, setInvestmentDialogOpen] = useState(false);
   const [selectedFund, setSelectedFund] = useState<any>(null);
-  const [showSubtitle, setShowSubtitle] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -238,6 +241,35 @@ export function Chat() {
     await handleStreamingRequest(buttonText);
   };
 
+  const handleFormSubmit = async (formData: any) => {
+    setIsProcessing(true);
+
+    // Create user message showing form was submitted
+    const formSummary = `Vade: ${formData.vade}, Ürün: ${formData.urun}, Nitelikli: ${formData.nitelikli}, Likidite: ${formData.nakit}, Karakter: ${formData.karakter}, İlgi: ${formData.ilgi}`;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: formSummary,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    // Add assistant message placeholder
+    const assistantMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      role: 'assistant',
+      content: '',
+    };
+
+    setMessages((prev) => [...prev, assistantMessage]);
+
+    // Send to API with form data
+    await handleStreamingRequest(formSummary);
+
+    setIsProcessing(false);
+  };
+
   const stopGeneration = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -248,9 +280,20 @@ export function Chat() {
   const startNewConversation = () => {
     setMessages([]);
     setInput('');
-    setShowSubtitle(false);
     hasAutoStarted.current = false;
   };
+
+  // Auto-start conversation when component mounts
+  useEffect(() => {
+    if (!hasAutoStarted.current && messages.length === 0) {
+      hasAutoStarted.current = true;
+      const timer = setTimeout(() => {
+        handleAutoStart();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen flex justify-center relative">
@@ -277,30 +320,13 @@ export function Chat() {
         </Button>
 
         {/* Header */}
-        <div className="flex flex-col items-center mb-4 sm:mb-8">
-          <TextGenerateEffect
-            words="Hoş Geldiniz!"
-            className="text-2xl sm:text-3xl text-muted-foreground text-center mt-0"
-            duration={0.3}
-            onComplete={() => {
-              setTimeout(() => {
-                setShowSubtitle(true);
-              }, 700);
-            }}
-          />
-          {showSubtitle && (
-            <TextGenerateEffect
-              words="Size bugün nasıl yardımcı olabilirim?"
-              className="text-sm sm:text-base font-normal text-muted-foreground text-center mt-0"
-              duration={0.3}
-              onComplete={() => {
-                if (!hasAutoStarted.current && messages.length === 0) {
-                  hasAutoStarted.current = true;
-                  handleAutoStart();
-                }
-              }}
-            />
-          )}
+        <div className="flex flex-col items-center mb-4 sm:mb-8 google-sans-flex">
+          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-muted-foreground text-center">
+            Hoş Geldiniz!
+          </h2>
+          <h5 className="scroll-m-20 text-base font-normal text-muted-foreground text-center mt-2">
+            Size bugün nasıl yardımcı olabilirim?
+          </h5>
         </div>
 
         {/* Messages Thread */}
@@ -320,49 +346,63 @@ export function Chat() {
                   </>
                 )}
                 <div
-                  className={`max-w-[80%] ${
+                  className={`max-w-[80%] google-sans-flex ${
                     message.role === 'user'
-                      ? 'bg-primary text-primary-foreground px-4 py-2 rounded-lg'
+                      ? 'text-primary-foreground px-4 py-2 rounded-lg'
                       : 'text-foreground'
                   }`}
+                  style={
+                    message.role === 'user'
+                      ? { backgroundImage: 'linear-gradient(to right, #cfd2cd, #c6c5c1, #bcb9b6, #b2adac, #a6a2a2)' }
+                      : undefined
+                  }
                 >
                   {message.role === 'assistant' ? (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        code: ({ node, inline, className, children, ...props }: any) => (
-                          inline ? (
-                            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold" {...props}>
-                              {children}
-                            </code>
-                          ) : (
-                            <pre className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted p-4">
-                              <code className="relative rounded font-mono text-sm" {...props}>
+                    message.object?.isComplete ? (
+                      <TextGenerateEffect
+                        words={message.content}
+                        className="google-sans-flex font-normal"
+                        duration={0.3}
+                        filter={false}
+                      />
+                    ) : (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          code: ({ node, inline, className, children, ...props }: any) => (
+                            inline ? (
+                              <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold" {...props}>
                                 {children}
                               </code>
-                            </pre>
-                          )
-                        ),
-                        p: ({ children }) => <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>,
-                        ul: ({ children }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2">{children}</ul>,
-                        ol: ({ children }) => <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">{children}</ol>,
-                        li: ({ children }) => <li>{children}</li>,
-                        h1: ({ children }) => <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{children}</h1>,
-                        h2: ({ children }) => <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">{children}</h2>,
-                        h3: ({ children }) => <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{children}</h3>,
-                        h4: ({ children }) => <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{children}</h4>,
-                        blockquote: ({ children }) => <blockquote className="mt-6 border-l-2 pl-6 italic">{children}</blockquote>,
-                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                        em: ({ children }) => <em className="italic">{children}</em>,
-                        a: ({ href, children }) => (
-                          <a href={href} className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener noreferrer">
-                            {children}
-                          </a>
-                        ),
-                      }}
-                    >
-                      {message.content}
-                    </ReactMarkdown>
+                            ) : (
+                              <pre className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted p-4">
+                                <code className="relative rounded font-mono text-sm" {...props}>
+                                  {children}
+                                </code>
+                              </pre>
+                            )
+                          ),
+                          p: ({ children }) => <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>,
+                          ul: ({ children }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2">{children}</ul>,
+                          ol: ({ children }) => <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">{children}</ol>,
+                          li: ({ children }) => <li>{children}</li>,
+                          h1: ({ children }) => <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{children}</h1>,
+                          h2: ({ children }) => <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">{children}</h2>,
+                          h3: ({ children }) => <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{children}</h3>,
+                          h4: ({ children }) => <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{children}</h4>,
+                          blockquote: ({ children }) => <blockquote className="mt-6 border-l-2 pl-6 italic">{children}</blockquote>,
+                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                          em: ({ children }) => <em className="italic">{children}</em>,
+                          a: ({ href, children }) => (
+                            <a href={href} className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener noreferrer">
+                              {children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    )
                   ) : (
                     message.content
                   )}
@@ -372,8 +412,42 @@ export function Chat() {
                 )}
               </div>
 
-              {/* Render Buttons if available */}
-              {message.role === 'assistant' && message.object?.buttons && message.object.buttons.length > 0 && index === messages.length - 1 && !isLoading && (
+              {/* Render Static Form if showForm is true */}
+              {message.role === 'assistant' && message.object?.showForm && index === messages.length - 1 && !isLoading && (
+                <div className="ml-[42px] mt-6">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <OnboardingForm onSubmit={handleFormSubmit} isProcessing={isProcessing} />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Show Loading State During Form Processing */}
+              {message.role === 'assistant' && index === messages.length - 1 && isProcessing && !message.object?.isComplete && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="ml-[42px] mt-6 flex items-center gap-3 text-muted-foreground"
+                >
+                  <Spinner className="h-5 w-5" />
+                  <span className="text-sm">Profilinizi oluşturuyorum...</span>
+                </motion.div>
+              )}
+
+              {/* Render Buttons only for Steps 0-1 (name and confirmation) */}
+              {message.role === 'assistant' &&
+               message.object?.buttons &&
+               message.object.buttons.length > 0 &&
+               (message.object.step === 0 || message.object.step === 1) &&
+               index === messages.length - 1 &&
+               !isLoading && (
                 <div className="ml-[42px] mt-4">
                   <div className="flex flex-wrap gap-2 max-w-2xl">
                     {message.object.buttons.map((btn, btnIndex) => (
@@ -397,24 +471,40 @@ export function Chat() {
                 </div>
               )}
 
-              {/* Render Summary if conversation is complete */}
+              {/* Render Summary if conversation is complete with animations */}
               {message.role === 'assistant' && message.object?.isComplete && message.object?.summary && (
-                <div className="ml-[42px] mt-6 space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="ml-[42px] mt-6 space-y-6"
+                >
                   {/* Risk Profile Badge */}
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Risk Profiliniz</h3>
-                    <Badge variant="secondary" className="text-sm">
-                      {message.object.summary.riskProfili}
-                    </Badge>
+                    <div className="space-y-1">
+                      <Badge variant="secondary" className="text-sm">
+                        {message.object.summary.riskProfili}
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        Dengeli getiri ve risk profili için uygun fonlar
+                      </p>
+                    </div>
                   </div>
 
                   {/* Fund Cards */}
                   {message.object.summary.onerilecekFonlar && message.object.summary.onerilecekFonlar.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Sizin İçin Önerilen Fonlar</h3>
+                      <h3 className="text-lg font-semibold mb-3">Sizin İçin Önerilen Fonlar</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {message.object.summary.onerilecekFonlar.map((fon) => (
-                          <Card key={fon.id || Math.random()} className="flex flex-col">
+                        {message.object.summary.onerilecekFonlar.map((fon, fonIndex) => (
+                          <motion.div
+                            key={fon.id || Math.random()}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.4 + fonIndex * 0.1 }}
+                          >
+                            <Card className="flex flex-col h-[500px]">
                             <CardHeader>
                               <div className="flex items-start justify-between gap-2">
                                 {fon.ad && <CardTitle className="text-base leading-tight">{fon.ad}</CardTitle>}
@@ -426,6 +516,9 @@ export function Chat() {
                               </div>
                               {fon.kategori && <CardDescription>{fon.kategori}</CardDescription>}
                             </CardHeader>
+                            <div className="px-6 pb-4">
+                              <FundChart fundIndex={fonIndex} />
+                            </div>
                             <CardContent className="flex-1 space-y-2 text-sm">
                               {fon.getiri && (
                                 <div className="flex justify-between">
@@ -473,11 +566,12 @@ export function Chat() {
                               )}
                             </CardFooter>
                           </Card>
+                          </motion.div>
                         ))}
                       </div>
                     </div>
                   )}
-                </div>
+                </motion.div>
               )}
             </div>
           ))}

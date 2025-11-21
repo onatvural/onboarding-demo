@@ -1,6 +1,6 @@
 # Stream Object Mimari Dokümantasyonu
 
-**Proje:** Demo-YKP - Yapı Kredi Portföy AI Asistan
+**Proje:** Demo-BSF - Beta Space Finans AI Asistan
 **Tarih:** Ocak 2025
 **Stack:** Next.js 15, AI SDK v5.0.59, Zod, Edge Runtime
 

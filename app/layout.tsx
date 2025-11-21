@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Demo YKP",
+  title: "Demo BSF",
   description: "AI-powered application",
 };
 
@@ -16,6 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Libertinus+Serif+Display&family=Zalando+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
+      </head>
       <body className={GeistSans.className}>
         {children}
         <Analytics />
