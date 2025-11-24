@@ -5,8 +5,8 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Demo BSF",
-  description: "AI-powered application",
+  title: "Yatırımcı Onboarding Demo | Beta Space Studio",
+  description: "SPK uygunluk testini chat-native deneyime dönüştüren yapay zeka destekli yatırımcı profilleme platformu",
 };
 
 export default function RootLayout({

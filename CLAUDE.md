@@ -190,6 +190,59 @@ npm run lint     # Run ESLint
 
 https://github.com/onatvural/Demo-BSF
 
+## Mobile Optimizations
+
+### Fixed Layout Implementation
+- **Fixed Header**: Back button and New Chat (+) button positioned at top with `fixed` positioning
+- **Fixed Input Area**: Textarea and send button anchored at bottom with `fixed` positioning
+- **Scrollable Content**: Messages thread with proper top padding (72px) and dynamic bottom padding
+- **Responsive Padding**: Chat thread uses 16px horizontal padding on mobile
+
+### Visual Viewport API Integration
+- **Keyboard Detection**: Detects mobile keyboard height using `window.visualViewport` API
+- **Dynamic Padding**: Adjusts messages container padding based on keyboard height: `${80 + keyboardHeight}px`
+- **Scroll Position Preservation**: Maintains scroll position when keyboard opens - user can continue reading AI messages without manual scrolling
+- **Input Focus Tracking**: Prevents auto-scroll during user typing with `isInputFocused` state
+
+### Responsive Avatar Behavior
+- **Hidden on Mobile**: User and AI avatars use `hidden sm:block` for wider text area on small screens
+- **Loading Exception**: AI avatar remains visible with `animate-pulse` during loading state on mobile
+- **Margin Adjustments**: All content uses `sm:ml-[42px]` instead of `ml-[42px]` to remove avatar spacing on mobile
+
+### Hydration Fix
+- **Client-Only Background**: ShootingStars and StarsBackground render client-side only with `isMounted` state
+- **Prevents Mismatch**: Eliminates hydration errors from random values in background effects
+
+### Implementation Details
+Located in `/components/chat.tsx`:
+```tsx
+// State management
+const [keyboardHeight, setKeyboardHeight] = useState(0);
+const [isInputFocused, setIsInputFocused] = useState(false);
+
+// Visual Viewport API listener
+useEffect(() => {
+  if (typeof window === 'undefined' || !window.visualViewport) return;
+  const handleViewportResize = () => {
+    if (window.visualViewport) {
+      const currentKeyboardHeight = window.innerHeight - window.visualViewport.height;
+      setKeyboardHeight(currentKeyboardHeight > 0 ? currentKeyboardHeight : 0);
+    }
+  };
+  window.visualViewport.addEventListener('resize', handleViewportResize);
+  return () => window.visualViewport.removeEventListener('resize', handleViewportResize);
+}, []);
+
+// Dynamic padding
+<div style={{ paddingBottom: `${80 + keyboardHeight}px` }}>
+
+// Focus tracking
+<Textarea
+  onFocus={() => setIsInputFocused(true)}
+  onBlur={() => setIsInputFocused(false)}
+/>
+```
+
 ## Notes
 
 - No chat history persistence (POC only)

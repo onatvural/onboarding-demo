@@ -15,6 +15,7 @@ import {
 import { ArrowUp, Square, User, Plus, ExternalLink, ArrowLeft } from 'lucide-react';
 import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -24,7 +25,7 @@ import { FundChart } from '@/components/fund-chart';
 import { ShootingStars } from '@/components/ui/shooting-stars';
 import { StarsBackground } from '@/components/ui/stars-background';
 import { OnboardingForm } from '@/components/onboarding-form';
-import { Spinner } from '@/components/ui/spinner';
+import { LoadingCard } from '@/components/loading-card';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import type { ConversationObject } from '@/lib/schemas';
 import { GeistMono } from 'geist/font/mono';
@@ -43,10 +44,33 @@ export function Chat() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [investmentDialogOpen, setInvestmentDialogOpen] = useState(false);
   const [selectedFund, setSelectedFund] = useState<any>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const hasAutoStarted = useRef(false);
+
+  // Prevent hydration mismatch for background effects
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Detect keyboard height on mobile
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return;
+
+    const handleViewportResize = () => {
+      if (window.visualViewport) {
+        const currentKeyboardHeight = window.innerHeight - window.visualViewport.height;
+        setKeyboardHeight(currentKeyboardHeight > 0 ? currentKeyboardHeight : 0);
+      }
+    };
+
+    window.visualViewport.addEventListener('resize', handleViewportResize);
+    return () => window.visualViewport.removeEventListener('resize', handleViewportResize);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
@@ -56,15 +80,15 @@ export function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  // Auto-scroll during streaming
+  // Auto-scroll during streaming (but not when input is focused)
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading && !isInputFocused) {
       const interval = setInterval(() => {
         scrollToBottom();
       }, 100);
       return () => clearInterval(interval);
     }
-  }, [isLoading]);
+  }, [isLoading, isInputFocused]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -264,8 +288,21 @@ export function Chat() {
 
     setMessages((prev) => [...prev, assistantMessage]);
 
-    // Send to API with form data
-    await handleStreamingRequest(formSummary);
+    // Optimize timing: Start API at 5s, keep loading until 6s
+    // User sees all flip messages while API processes in background
+    let apiCallPromise: Promise<any> | null = null;
+
+    setTimeout(() => {
+      apiCallPromise = handleStreamingRequest(formSummary);
+    }, 5000);
+
+    // Keep loading animation visible for 6 seconds total
+    await new Promise(resolve => setTimeout(resolve, 6000));
+
+    // Wait for API if it hasn't finished yet (shouldn't take long)
+    if (apiCallPromise) {
+      await apiCallPromise;
+    }
 
     setIsProcessing(false);
   };
@@ -281,11 +318,15 @@ export function Chat() {
     setMessages([]);
     setInput('');
     hasAutoStarted.current = false;
+    // Immediately trigger auto-start after clearing
+    setTimeout(() => {
+      handleAutoStart();
+    }, 1000);
   };
 
   // Auto-start conversation when component mounts
   useEffect(() => {
-    if (!hasAutoStarted.current && messages.length === 0) {
+    if (messages.length === 0) {
       hasAutoStarted.current = true;
       const timer = setTimeout(() => {
         handleAutoStart();
@@ -297,40 +338,38 @@ export function Chat() {
 
   return (
     <div className="min-h-screen flex justify-center relative">
-      <ShootingStars />
-      <StarsBackground />
-      <div className="w-full max-w-[920px] flex flex-col h-screen py-2 sm:py-8 px-4 relative z-10">
-        {/* Back Button */}
+      {isMounted && (
+        <>
+          <ShootingStars />
+          <StarsBackground />
+        </>
+      )}
+
+      {/* Fixed Header Buttons */}
+      <div className="fixed top-2 sm:top-8 left-0 right-0 z-20 flex justify-between px-4 max-w-[920px] mx-auto">
         <Link href="/">
           <Button
-            className="absolute top-2 sm:top-8 left-4 h-10 w-10 rounded-lg"
+            className="h-10 w-10 rounded-lg"
             variant="outline"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-
-        {/* New Conversation Button */}
         <Button
           onClick={startNewConversation}
-          className="absolute top-2 sm:top-8 right-4 h-10 w-10 rounded-lg"
+          className="h-10 w-10 rounded-lg"
           variant="outline"
         >
           <Plus className="h-5 w-5" />
         </Button>
+      </div>
 
-        {/* Header */}
-        <div className="flex flex-col items-center mb-4 sm:mb-8 google-sans-flex">
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-muted-foreground text-center">
-            Hoş Geldiniz!
-          </h2>
-          <h5 className="scroll-m-20 text-base font-normal text-muted-foreground text-center mt-2">
-            Size bugün nasıl yardımcı olabilirim?
-          </h5>
-        </div>
-
+      <div className="w-full max-w-[920px] flex flex-col h-screen relative z-10">
         {/* Messages Thread */}
-        <div className="flex-1 overflow-y-auto mb-2 sm:mb-4 mt-2 sm:mt-8 space-y-6 pr-2 custom-scrollbar">
+        <div
+          className="flex-1 overflow-y-auto pt-[72px] px-4 space-y-6 sm:pr-6 custom-scrollbar"
+          style={{ paddingBottom: `${80 + keyboardHeight}px` }}
+        >
           {messages.map((message, index) => (
             <div key={message.id}>
               <div
@@ -339,9 +378,9 @@ export function Chat() {
                 {message.role === 'assistant' && (
                   <>
                     {index === messages.length - 1 && isLoading ? (
-                      <BotIconAnimated className="h-[30px] w-[30px] shrink-0 mt-1" />
+                      <BotIconAnimated className="h-[30px] w-[30px] shrink-0 mt-1 animate-pulse" />
                     ) : (
-                      <BotIcon className="h-[30px] w-[30px] shrink-0 mt-1" />
+                      <BotIcon className="hidden sm:block h-[30px] w-[30px] shrink-0 mt-1" />
                     )}
                   </>
                 )}
@@ -408,13 +447,13 @@ export function Chat() {
                   )}
                 </div>
                 {message.role === 'user' && (
-                  <User className="h-6 w-6 shrink-0 mt-1" />
+                  <User className="hidden sm:block h-6 w-6 shrink-0 mt-1" />
                 )}
               </div>
 
               {/* Render Static Form if showForm is true */}
               {message.role === 'assistant' && message.object?.showForm && index === messages.length - 1 && !isLoading && (
-                <div className="ml-[42px] mt-6">
+                <div className="sm:ml-[42px] mt-6">
                   <AnimatePresence mode="wait">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -429,17 +468,13 @@ export function Chat() {
               )}
 
               {/* Show Loading State During Form Processing */}
-              {message.role === 'assistant' && index === messages.length - 1 && isProcessing && !message.object?.isComplete && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="ml-[42px] mt-6 flex items-center gap-3 text-muted-foreground"
-                >
-                  <Spinner className="h-5 w-5" />
-                  <span className="text-sm">Profilinizi oluşturuyorum...</span>
-                </motion.div>
-              )}
+              <AnimatePresence mode="wait">
+                {message.role === 'assistant' && index === messages.length - 1 && isProcessing && !message.object?.isComplete && (
+                  <div className="sm:ml-[42px] mt-6">
+                    <LoadingCard />
+                  </div>
+                )}
+              </AnimatePresence>
 
               {/* Render Buttons only for Steps 0-1 (name and confirmation) */}
               {message.role === 'assistant' &&
@@ -448,7 +483,7 @@ export function Chat() {
                (message.object.step === 0 || message.object.step === 1) &&
                index === messages.length - 1 &&
                !isLoading && (
-                <div className="ml-[42px] mt-4">
+                <div className="sm:ml-[42px] mt-4">
                   <div className="flex flex-wrap gap-2 max-w-2xl">
                     {message.object.buttons.map((btn, btnIndex) => (
                       <motion.div
@@ -477,7 +512,7 @@ export function Chat() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="ml-[42px] mt-6 space-y-6"
+                  className="sm:ml-[42px] mt-6 space-y-6"
                 >
                   {/* Risk Profile Badge */}
                   <div>
@@ -538,30 +573,17 @@ export function Chat() {
                                 </p>
                               )}
                             </CardContent>
-                            <CardFooter className="flex gap-2">
-                              {fon.detayUrl && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="flex-1"
-                                  asChild
-                                >
-                                  <a href={fon.detayUrl} target="_blank" rel="noopener noreferrer">
-                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                    Detay
-                                  </a>
-                                </Button>
-                              )}
+                            <CardFooter>
                               {fon.ad && (
                                 <Button
                                   size="sm"
-                                  className={fon.detayUrl ? "flex-1" : "w-full"}
+                                  className="w-full"
                                   onClick={() => {
                                     setSelectedFund(fon);
                                     setInvestmentDialogOpen(true);
                                   }}
                                 >
-                                  Yatırım Yap
+                                  Detaylar
                                 </Button>
                               )}
                             </CardFooter>
@@ -578,55 +600,76 @@ export function Chat() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
-        <form onSubmit={handleSubmit} className="relative mb-1 sm:mb-2">
-          <div className="relative border border-input rounded-lg bg-background flex items-center">
-            <Textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Mesajınızı yazın..."
-              className="resize-none border-0 px-6 py-4 pr-16 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[40px] max-h-[200px]"
-              rows={1}
-              disabled={isLoading}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e as any);
-                }
-              }}
-            />
-            <Button
-              type={isLoading ? 'button' : 'submit'}
-              onClick={isLoading ? stopGeneration : undefined}
-              disabled={!input.trim() && !isLoading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg"
+        {/* Fixed Input Area */}
+        <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 right-0 z-20 bg-background/95 backdrop-blur-sm border-t border-border">
+          <div className="max-w-[920px] mx-auto px-4 py-2 sm:py-3">
+            <div className="relative border border-input rounded-lg bg-background flex items-center">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setIsInputFocused(false)}
+                placeholder="Mesajınızı yazın..."
+                className="resize-none border-0 px-6 py-4 pr-16 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[40px] max-h-[200px]"
+                rows={1}
+                disabled={isLoading}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e as any);
+                  }
+                }}
+              />
+              <Button
+                type={isLoading ? 'button' : 'submit'}
+                onClick={isLoading ? stopGeneration : undefined}
+                disabled={!input.trim() && !isLoading}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg"
+              >
+                {isLoading ? <Square className="h-4 w-4" /> : <ArrowUp className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {/* Credit Link */}
+            <a
+              href="https://www.linkedin.com/in/onatvural/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-xs text-muted-foreground text-center block hover:text-foreground transition-colors mt-2 ${GeistMono.className}`}
             >
-              {isLoading ? <Square className="h-4 w-4" /> : <ArrowUp className="h-4 w-4" />}
-            </Button>
+              Bunu Kim Yaptı?
+            </a>
           </div>
         </form>
-
-        {/* Credit Link */}
-        <a
-          href="https://www.linkedin.com/in/onatvural/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`text-xs text-muted-foreground text-right block hover:text-foreground transition-colors ${GeistMono.className}`}
-        >
-          Bunu Kim Yaptı?
-        </a>
       </div>
 
       {/* Investment Dialog */}
       <Dialog open={investmentDialogOpen} onOpenChange={setInvestmentDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Yatırım Yap</DialogTitle>
+            <DialogTitle className="text-2xl">Formu Doldurun, Sizi Arayalım</DialogTitle>
             <DialogDescription>
-              {selectedFund?.ad} fonuna yatırım yapmak için bilgilerinizi girin.
+              Bu formu doldurun sizinle Merve hanım en kısa sürede iletişime geçecek
             </DialogDescription>
           </DialogHeader>
+
+          {/* Portfolio Manager Profile */}
+          <div className="flex items-center gap-4 py-4 border-b">
+            <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+              <Image
+                src="/merve.jpeg"
+                alt="Merve Akçiçek"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">Merve Akçiçek</h3>
+              <p className="text-sm text-muted-foreground">Portföy Yöneticisi</p>
+            </div>
+          </div>
+
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
               <label htmlFor="amount" className="text-sm font-medium">
@@ -664,22 +707,36 @@ export function Chat() {
             </div>
             {selectedFund && (
               <div className="bg-muted p-3 rounded-md text-sm">
-                <p className="font-medium mb-1">Fon Bilgileri:</p>
+                <p className="font-medium mb-1">Seçtiğiniz Fon:</p>
                 {selectedFund.ad && <p className="text-muted-foreground">• {selectedFund.ad}</p>}
                 {selectedFund.getiri && <p className="text-muted-foreground">• Yıllık Getiri: %{selectedFund.getiri}</p>}
                 {selectedFund.risk && <p className="text-muted-foreground">• Risk: {selectedFund.risk}</p>}
               </div>
             )}
+
+            {/* KVKK Checkbox */}
+            <div className="flex items-start space-x-2">
+              <input
+                type="checkbox"
+                id="kvkk"
+                className="mt-1 h-4 w-4 rounded border-input"
+              />
+              <label htmlFor="kvkk" className="text-sm text-muted-foreground leading-tight">
+                <a href="#" className="underline hover:text-foreground">KVKK Aydınlatma Metni</a> ve <a href="#" className="underline hover:text-foreground">Açık Rıza Metni</a>'ni okudum, kabul ediyorum.
+              </label>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setInvestmentDialogOpen(false)}>
               İptal
             </Button>
-            <Button onClick={() => {
-              alert('Yatırım talebiniz alındı! Bir temsilcimiz en kısa sürede sizinle iletişime geçecektir.');
+            <Button
+              className="bg-[#3a6ea5] hover:bg-[#004e98] text-white"
+              onClick={() => {
+              alert('Talebiniz alındı! Merve hanım en kısa sürede sizinle iletişime geçecektir.');
               setInvestmentDialogOpen(false);
             }}>
-              Yatırım Talebini Gönder
+              Gönder
             </Button>
           </DialogFooter>
         </DialogContent>

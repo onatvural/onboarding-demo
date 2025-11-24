@@ -94,12 +94,11 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     Yatırım süreniz risk profilinizi belirler
                   </p>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
                       <Button
                         type="button"
                         variant={field.value === "1 yıldan az" ? "default" : "outline"}
                         onClick={() => field.onChange("1 yıldan az")}
-                        className="flex-1 min-w-[140px]"
                       >
                         1 yıldan az
                       </Button>
@@ -107,7 +106,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "1-3 yıl" ? "default" : "outline"}
                         onClick={() => field.onChange("1-3 yıl")}
-                        className="flex-1 min-w-[140px]"
                       >
                         1-3 yıl
                       </Button>
@@ -115,7 +113,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "3-5 yıl" ? "default" : "outline"}
                         onClick={() => field.onChange("3-5 yıl")}
-                        className="flex-1 min-w-[140px]"
                       >
                         3-5 yıl
                       </Button>
@@ -123,7 +120,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "5 yıl+" ? "default" : "outline"}
                         onClick={() => field.onChange("5 yıl+")}
-                        className="flex-1 min-w-[140px]"
                       >
                         5 yıl+
                       </Button>
@@ -162,12 +158,11 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     Yatırım tercihinizi belirtin
                   </p>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
                       <Button
                         type="button"
                         variant={field.value === "Yatırım Fonu" ? "default" : "outline"}
                         onClick={() => field.onChange("Yatırım Fonu")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Yatırım Fonu
                       </Button>
@@ -175,7 +170,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Altın" ? "default" : "outline"}
                         onClick={() => field.onChange("Altın")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Altın
                       </Button>
@@ -183,7 +177,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Mevduat" ? "default" : "outline"}
                         onClick={() => field.onChange("Mevduat")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Mevduat
                       </Button>
@@ -191,7 +184,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Döviz" ? "default" : "outline"}
                         onClick={() => field.onChange("Döviz")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Döviz
                       </Button>
@@ -199,7 +191,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Hisse Senedi" ? "default" : "outline"}
                         onClick={() => field.onChange("Hisse Senedi")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Hisse Senedi
                       </Button>
@@ -207,7 +198,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Karma" ? "default" : "outline"}
                         onClick={() => field.onChange("Karma")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Karma
                       </Button>
@@ -247,12 +237,11 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     Nitelikli yatırımcı statünüzü belirtin
                   </p>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
                       <Button
                         type="button"
                         variant={field.value === "Evet" ? "default" : "outline"}
                         onClick={() => field.onChange("Evet")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Evet
                       </Button>
@@ -260,7 +249,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Hayır" ? "default" : "outline"}
                         onClick={() => field.onChange("Hayır")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Hayır
                       </Button>
@@ -268,7 +256,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Emin değilim" ? "default" : "outline"}
                         onClick={() => field.onChange("Emin değilim")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Emin değilim
                       </Button>
@@ -307,12 +294,11 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     Likidite ihtiyacınız risk toleransınızı etkiler
                   </p>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
                       <Button
                         type="button"
                         variant={field.value === "Çok düşük" ? "default" : "outline"}
                         onClick={() => field.onChange("Çok düşük")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Çok düşük
                       </Button>
@@ -320,7 +306,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Düşük" ? "default" : "outline"}
                         onClick={() => field.onChange("Düşük")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Düşük
                       </Button>
@@ -328,7 +313,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Orta" ? "default" : "outline"}
                         onClick={() => field.onChange("Orta")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Orta
                       </Button>
@@ -336,7 +320,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Yüksek" ? "default" : "outline"}
                         onClick={() => field.onChange("Yüksek")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Yüksek
                       </Button>
@@ -375,12 +358,11 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     Risk toleransınızı değerlendiriyoruz
                   </p>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
                       <Button
                         type="button"
                         variant={field.value === "Hemen satarım" ? "default" : "outline"}
                         onClick={() => field.onChange("Hemen satarım")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Hemen satarım
                       </Button>
@@ -388,7 +370,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Bekler izlerim" ? "default" : "outline"}
                         onClick={() => field.onChange("Bekler izlerim")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Bekler izlerim
                       </Button>
@@ -396,7 +377,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Fırsat görürüm" ? "default" : "outline"}
                         onClick={() => field.onChange("Fırsat görürüm")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Fırsat görürüm
                       </Button>
@@ -404,7 +384,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Deneyimsizim" ? "default" : "outline"}
                         onClick={() => field.onChange("Deneyimsizim")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Deneyimsizim
                       </Button>
@@ -443,12 +422,11 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     Tematik yatırım tercihinizi belirtin
                   </p>
                   <FormControl>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
                       <Button
                         type="button"
                         variant={field.value === "Evet ilgimi çeker" ? "default" : "outline"}
                         onClick={() => field.onChange("Evet ilgimi çeker")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Evet ilgimi çeker
                       </Button>
@@ -456,7 +434,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Biraz" ? "default" : "outline"}
                         onClick={() => field.onChange("Biraz")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Biraz
                       </Button>
@@ -464,7 +441,6 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                         type="button"
                         variant={field.value === "Hayır" ? "default" : "outline"}
                         onClick={() => field.onChange("Hayır")}
-                        className="flex-1 min-w-[140px]"
                       >
                         Hayır
                       </Button>
@@ -479,7 +455,7 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
             <Button
               type="submit"
               disabled={isProcessing}
-              className="w-full bg-[#7d4e57] hover:bg-[#a6405d] text-[#CFD2CD] transition-colors"
+              className="w-full bg-[#3a6ea5] hover:bg-[#004e98] text-[#CFD2CD] transition-colors"
               size="lg"
             >
               {isProcessing ? (

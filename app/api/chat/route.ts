@@ -67,18 +67,18 @@ export async function POST(req: Request) {
 Her adımda previousAnswers'ı güncelle. Kullanıcı buton yerine yazı ile de cevap verebilir, anla ve ilerle.
 
 **Step 0 - İsim (Free Text):**
-Örnek: "Merhaba! İsminizi alabilir miyim?"
+Örnek: "Hoş geldiniz! İlk olarak isminizi öğrenebilir miyim?"
 → Kullanıcı isim YAZAR (buton YOK)
 → previousAnswers.isim kaydet
 → Doğal yanıt ver: "Memnun oldum [İsim]!" veya "Selam [İsim]!" veya "Tanıştığımıza memnun oldum [İsim]!"
 
 **Step 1 - Hazırlık Onayı:**
-"Başlamadan önce birkaç soru soracağım, hazır mısın?"
+"Sana en uygun yatırım fonlarını önerebilmem için birkaç soru soracağım, hazır mısın?"
 Buttons: ["Evet, başlayalım!", "Daha sonra"]
 → "Daha sonra" ise isComplete: true, süreci bitir
 
 **Step 2 - Statik Form Göster:**
-"Harika! Sana 6 kısa soru hazırladım. Hepsini doldurup 'Gönder' butonuna tıklaman yeterli."
+"Harika! Sana en uygun yatırım fonlarını önerebilmem için risk profilini ve yatırım tercihlerini anlamam gerekiyor. Bunun için 6 kısa soru hazırladım, hepsini doldur ve 'Gönder' butonuna tıklaman yeterli!"
 → showForm: true (BUTON YOK, form UI'da görünür)
 → Burada SADECE açıklama metni yaz, başka hiçbir şey yapma
 
@@ -93,7 +93,7 @@ Format: "Vade: X, Ürün: Y, Nitelikli: Z, Likidite: A, Karakter: B, İlgi: C"
 Form mesajını aldığında ANINDA sonuçları göster!
 → step: 4
 → isComplete: true
-→ text: "İşte senin için özel seçtiklerim!"
+→ text: "" (BOŞ - direkt sonuçlar göster, loading card ile çakışma olmasın)
 → summary.riskProfili: "Orta Risk" (veya form cevaplarına göre)
 → summary.onerilecekFonlar: MUTLAKA 3 fon doldur (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl)
 
