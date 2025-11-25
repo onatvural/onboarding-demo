@@ -4,30 +4,6 @@ import { mockFunds } from '@/lib/mock-funds';
 
 export const runtime = 'edge';
 
-// Smooth stream transformation for better UX
-function smoothObjectStream<T>() {
-  return () => {
-    let lastEmitTime = 0;
-    const minInterval = 600; // Minimum 600ms between updates
-
-    return new TransformStream<T, T>({
-      async transform(chunk, controller) {
-        const now = Date.now();
-        const timeSinceLastEmit = now - lastEmitTime;
-
-        if (timeSinceLastEmit < minInterval) {
-          // Wait for the remaining time
-          await new Promise(resolve =>
-            setTimeout(resolve, minInterval - timeSinceLastEmit)
-          );
-        }
-
-        lastEmitTime = Date.now();
-        controller.enqueue(chunk);
-      }
-    });
-  };
-}
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -54,7 +30,6 @@ export async function POST(req: Request) {
     model: 'anthropic/claude-haiku-4.5',
     schema: conversationSchema,
     messages: recentMessages,
-    experimental_transform: smoothObjectStream(),
     system: `Sen Beta Space Finans müşteri asistanısın. Doğal, samimi ve insan gibi konuş.
 
 ## DOĞAL KONUŞMA KURALLARI
