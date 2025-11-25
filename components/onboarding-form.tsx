@@ -78,9 +78,9 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                          <Info className="h-4 w-4" />
-                        </Button>
+                        <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 cursor-help">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>
@@ -142,9 +142,9 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                          <Info className="h-4 w-4" />
-                        </Button>
+                        <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 cursor-help">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>
@@ -220,9 +220,9 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                          <Info className="h-4 w-4" />
-                        </Button>
+                        <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 cursor-help">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>
@@ -278,9 +278,9 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                          <Info className="h-4 w-4" />
-                        </Button>
+                        <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 cursor-help">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>
@@ -342,9 +342,9 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                          <Info className="h-4 w-4" />
-                        </Button>
+                        <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 cursor-help">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>
@@ -406,9 +406,9 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                          <Info className="h-4 w-4" />
-                        </Button>
+                        <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 cursor-help">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p>

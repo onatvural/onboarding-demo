@@ -8,7 +8,7 @@ export const runtime = 'edge';
 function smoothObjectStream<T>() {
   return () => {
     let lastEmitTime = 0;
-    const minInterval = 250; // Minimum 250ms between updates
+    const minInterval = 600; // Minimum 600ms between updates
 
     return new TransformStream<T, T>({
       async transform(chunk, controller) {

@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { ArrowUp, Square, User, Plus, ExternalLink, ArrowLeft } from 'lucide-react';
+import { ArrowUp, Square, User, Plus, ExternalLink, ArrowLeft, CheckCircle2, TrendingUp, Shield, BadgeCheck } from 'lucide-react';
 import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -27,6 +27,7 @@ import { StarsBackground } from '@/components/ui/stars-background';
 import { OnboardingForm } from '@/components/onboarding-form';
 import { LoadingCard } from '@/components/loading-card';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
+import { StreamingTypewriter } from '@/components/ui/streaming-typewriter';
 import type { ConversationObject } from '@/lib/schemas';
 import { GeistMono } from 'geist/font/mono';
 
@@ -43,7 +44,10 @@ export function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [investmentDialogOpen, setInvestmentDialogOpen] = useState(false);
+  const [investmentSuccessOpen, setInvestmentSuccessOpen] = useState(false);
   const [selectedFund, setSelectedFund] = useState<any>(null);
+  const [investmentAmount, setInvestmentAmount] = useState('');
+  const [showFormReady, setShowFormReady] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -317,21 +321,17 @@ export function Chat() {
   const startNewConversation = () => {
     setMessages([]);
     setInput('');
+    setShowFormReady(false);
     hasAutoStarted.current = false;
     // Immediately trigger auto-start after clearing
-    setTimeout(() => {
-      handleAutoStart();
-    }, 1000);
+    handleAutoStart();
   };
 
   // Auto-start conversation when component mounts
   useEffect(() => {
     if (messages.length === 0) {
       hasAutoStarted.current = true;
-      const timer = setTimeout(() => {
-        handleAutoStart();
-      }, 1000);
-      return () => clearTimeout(timer);
+      handleAutoStart();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -367,7 +367,7 @@ export function Chat() {
       <div className="w-full max-w-[920px] flex flex-col h-screen relative z-10">
         {/* Messages Thread */}
         <div
-          className="flex-1 overflow-y-auto pt-[72px] px-4 space-y-6 sm:pr-6 custom-scrollbar"
+          className="flex-1 overflow-y-auto pt-[72px] sm:pt-[96px] px-4 space-y-6 sm:pr-6 custom-scrollbar"
           style={{ paddingBottom: `${80 + keyboardHeight}px` }}
         >
           {messages.map((message, index) => (
@@ -405,42 +405,16 @@ export function Chat() {
                         filter={false}
                       />
                     ) : (
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          code: ({ node, inline, className, children, ...props }: any) => (
-                            inline ? (
-                              <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold" {...props}>
-                                {children}
-                              </code>
-                            ) : (
-                              <pre className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted p-4">
-                                <code className="relative rounded font-mono text-sm" {...props}>
-                                  {children}
-                                </code>
-                              </pre>
-                            )
-                          ),
-                          p: ({ children }) => <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>,
-                          ul: ({ children }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2">{children}</ul>,
-                          ol: ({ children }) => <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">{children}</ol>,
-                          li: ({ children }) => <li>{children}</li>,
-                          h1: ({ children }) => <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{children}</h1>,
-                          h2: ({ children }) => <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">{children}</h2>,
-                          h3: ({ children }) => <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{children}</h3>,
-                          h4: ({ children }) => <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{children}</h4>,
-                          blockquote: ({ children }) => <blockquote className="mt-6 border-l-2 pl-6 italic">{children}</blockquote>,
-                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                          em: ({ children }) => <em className="italic">{children}</em>,
-                          a: ({ href, children }) => (
-                            <a href={href} className="font-medium text-primary underline underline-offset-4" target="_blank" rel="noopener noreferrer">
-                              {children}
-                            </a>
-                          ),
+                      <StreamingTypewriter
+                        content={message.content}
+                        speed={80}
+                        className="google-sans-flex font-normal"
+                        onComplete={() => {
+                          if (message.object?.showForm) {
+                            setShowFormReady(true);
+                          }
                         }}
-                      >
-                        {message.content}
-                      </ReactMarkdown>
+                      />
                     )
                   ) : (
                     message.content
@@ -451,8 +425,8 @@ export function Chat() {
                 )}
               </div>
 
-              {/* Render Static Form if showForm is true */}
-              {message.role === 'assistant' && message.object?.showForm && index === messages.length - 1 && !isLoading && (
+              {/* Render Static Form if showForm is true (after typewriter completes) */}
+              {message.role === 'assistant' && message.object?.showForm && index === messages.length - 1 && !isLoading && showFormReady && (
                 <div className="sm:ml-[42px] mt-6">
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -539,9 +513,8 @@ export function Chat() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.4 + fonIndex * 0.1 }}
                           >
-                            <Card className="flex flex-col h-[500px]">
-                            <CardHeader>
-                              <div className="flex items-start justify-between gap-2">
+                            <Card className="flex flex-col h-[380px] p-4">
+                              <div className="flex items-start justify-between gap-2 mb-1">
                                 {fon.ad && <CardTitle className="text-base leading-tight">{fon.ad}</CardTitle>}
                                 {fon.risk && (
                                   <Badge variant="outline" className="shrink-0 text-xs">
@@ -549,35 +522,36 @@ export function Chat() {
                                   </Badge>
                                 )}
                               </div>
-                              {fon.kategori && <CardDescription>{fon.kategori}</CardDescription>}
-                            </CardHeader>
-                            <div className="px-6 pb-4">
-                              <FundChart fundIndex={fonIndex} />
-                            </div>
-                            <CardContent className="flex-1 space-y-2 text-sm">
-                              {fon.getiri && (
-                                <div className="flex justify-between">
-                                  <span className="text-muted-foreground">Yıllık Getiri:</span>
-                                  <span className="font-semibold text-green-600">%{fon.getiri}</span>
-                                </div>
-                              )}
-                              {fon.minimumTutar && (
-                                <div className="flex justify-between">
-                                  <span className="text-muted-foreground">Minimum Tutar:</span>
-                                  <span className="font-medium">{fon.minimumTutar.toLocaleString('tr-TR')} TL</span>
-                                </div>
-                              )}
-                              {fon.aciklama && (
-                                <p className="text-xs text-muted-foreground mt-3 line-clamp-3">
-                                  {fon.aciklama}
-                                </p>
-                              )}
-                            </CardContent>
-                            <CardFooter>
+                              {fon.kategori && <CardDescription className="mb-3">{fon.kategori}</CardDescription>}
+
+                              <div className="mb-3">
+                                <FundChart fundIndex={fonIndex} />
+                              </div>
+
+                              <div className="flex-1 space-y-1 text-sm">
+                                {fon.getiri && (
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Yıllık Getiri:</span>
+                                    <span className="font-semibold text-green-600">%{fon.getiri}</span>
+                                  </div>
+                                )}
+                                {fon.minimumTutar && (
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Minimum Tutar:</span>
+                                    <span className="font-medium">{fon.minimumTutar.toLocaleString('tr-TR')} TL</span>
+                                  </div>
+                                )}
+                                {fon.aciklama && (
+                                  <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                                    {fon.aciklama}
+                                  </p>
+                                )}
+                              </div>
+
                               {fon.ad && (
                                 <Button
                                   size="sm"
-                                  className="w-full"
+                                  className="w-full mt-4"
                                   onClick={() => {
                                     setSelectedFund(fon);
                                     setInvestmentDialogOpen(true);
@@ -586,7 +560,6 @@ export function Chat() {
                                   Detaylar
                                 </Button>
                               )}
-                            </CardFooter>
                           </Card>
                           </motion.div>
                         ))}
@@ -645,74 +618,94 @@ export function Chat() {
       </div>
 
       {/* Investment Dialog */}
-      <Dialog open={investmentDialogOpen} onOpenChange={setInvestmentDialogOpen}>
+      <Dialog open={investmentDialogOpen} onOpenChange={(open) => {
+        setInvestmentDialogOpen(open);
+        if (!open) setInvestmentAmount('');
+      }}>
         <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Formu Doldurun, Sizi Arayalım</DialogTitle>
-            <DialogDescription>
-              Bu formu doldurun sizinle Merve hanım en kısa sürede iletişime geçecek
-            </DialogDescription>
-          </DialogHeader>
+          <DialogTitle className="sr-only">Yatırım Formu</DialogTitle>
+          {/* 1. HERO SECTION - Fund highlight */}
+          <div className="text-center pb-4 border-b">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <BadgeCheck className="h-4 w-4 text-green-500" />
+              <span className="text-xs font-medium text-green-600">Profilinize Uygun</span>
+            </div>
+            <h2 className="text-2xl font-bold mb-4">Tam Size Göre</h2>
 
-          {/* Portfolio Manager Profile */}
-          <div className="flex items-center gap-4 py-4 border-b">
-            <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
-              <Image
-                src="/merve.jpeg"
-                alt="Merve Akçiçek"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Merve Akçiçek</h3>
-              <p className="text-sm text-muted-foreground">Portföy Yöneticisi</p>
-            </div>
+            {selectedFund && (
+              <div className="bg-muted/50 rounded-lg p-3 sm:p-4">
+                {selectedFund.ad && (
+                  <p className="font-semibold text-lg mb-1">{selectedFund.ad}</p>
+                )}
+                <p className="text-sm text-muted-foreground mb-3">
+                  {selectedFund.aciklama || "Güvenli ve likit yatırım aracı"}
+                </p>
+
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  {selectedFund.getiri && (
+                    <div className="bg-green-500/10 rounded-md p-2">
+                      <div className="flex items-center justify-center gap-1">
+                        <TrendingUp className="h-4 w-4 text-green-600" />
+                        <span className="font-bold text-green-600">%{selectedFund.getiri}</span>
+                      </div>
+                      <p className="text-xs text-green-600 mt-0.5">Enflasyon üzeri</p>
+                    </div>
+                  )}
+                  {selectedFund.risk && (
+                    <div className="bg-blue-500/10 rounded-md p-2 flex flex-col items-center justify-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <Shield className="h-4 w-4 text-blue-600" />
+                        <span className="font-medium text-blue-600">{selectedFund.risk}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="grid gap-4 py-4">
+          {/* 2. FORM SECTION - Action area */}
+          <div className="py-4 space-y-3">
+            <h3 className="font-medium text-sm">Hemen Başlayın</h3>
+
             <div className="space-y-2">
-              <label htmlFor="amount" className="text-sm font-medium">
-                Yatırım Tutarı (TL)
-              </label>
-              <input
-                id="amount"
-                type="number"
-                min={selectedFund?.minimumTutar || 1000}
-                placeholder={selectedFund?.minimumTutar ? `Minimum: ${selectedFund.minimumTutar.toLocaleString('tr-TR')} TL` : 'Minimum: 1.000 TL'}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₺</span>
+                <input
+                  id="amount"
+                  type="text"
+                  inputMode="numeric"
+                  value={investmentAmount}
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/\D/g, '');
+                    if (rawValue) {
+                      const formatted = Number(rawValue).toLocaleString('tr-TR');
+                      setInvestmentAmount(formatted);
+                    } else {
+                      setInvestmentAmount('');
+                    }
+                  }}
+                  placeholder={selectedFund?.minimumTutar ? `Min: ${selectedFund.minimumTutar.toLocaleString('tr-TR')}` : 'Yatırım Tutarı'}
+                  className="flex h-10 w-full rounded-md border border-input bg-background pl-7 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">
-                Ad Soyad
-              </label>
               <input
                 id="name"
                 type="text"
-                placeholder="Adınız ve soyadınız"
+                placeholder="Ad Soyad"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="phone" className="text-sm font-medium">
-                Telefon
-              </label>
               <input
                 id="phone"
                 type="tel"
-                placeholder="05XX XXX XX XX"
+                placeholder="Telefon (05XX XXX XX XX)"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
-            {selectedFund && (
-              <div className="bg-muted p-3 rounded-md text-sm">
-                <p className="font-medium mb-1">Seçtiğiniz Fon:</p>
-                {selectedFund.ad && <p className="text-muted-foreground">• {selectedFund.ad}</p>}
-                {selectedFund.getiri && <p className="text-muted-foreground">• Yıllık Getiri: %{selectedFund.getiri}</p>}
-                {selectedFund.risk && <p className="text-muted-foreground">• Risk: {selectedFund.risk}</p>}
-              </div>
-            )}
 
             {/* KVKK Checkbox */}
             <div className="flex items-start space-x-2">
@@ -721,22 +714,76 @@ export function Chat() {
                 id="kvkk"
                 className="mt-1 h-4 w-4 rounded border-input"
               />
-              <label htmlFor="kvkk" className="text-sm text-muted-foreground leading-tight">
+              <label htmlFor="kvkk" className="text-xs text-muted-foreground leading-tight">
                 <a href="#" className="underline hover:text-foreground">KVKK Aydınlatma Metni</a> ve <a href="#" className="underline hover:text-foreground">Açık Rıza Metni</a>'ni okudum, kabul ediyorum.
               </label>
             </div>
           </div>
-          <DialogFooter>
+
+          {/* 3. TRUST SECTION - Merve at bottom */}
+          <div className="flex items-center gap-3 pt-3 border-t">
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden flex-shrink-0">
+              <Image
+                src="/merve.jpeg"
+                alt="Merve Akçiçek"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground/70 tracking-wider">FON MÜŞTERİ TEMSİLCİSİ</p>
+              <p className="font-medium text-sm">Merve Akçiçek</p>
+              <p className="text-xs text-muted-foreground">Sizi en kısa sürede arayacak</p>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setInvestmentDialogOpen(false)}>
               İptal
             </Button>
             <Button
               className="bg-[#3a6ea5] hover:bg-[#004e98] text-white"
               onClick={() => {
-              alert('Talebiniz alındı! Merve hanım en kısa sürede sizinle iletişime geçecektir.');
               setInvestmentDialogOpen(false);
+              setInvestmentSuccessOpen(true);
             }}>
               Gönder
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Investment Success Dialog */}
+      <Dialog open={investmentSuccessOpen} onOpenChange={setInvestmentSuccessOpen}>
+        <DialogContent className="sm:max-w-[500px] text-center">
+          <div className="flex justify-center mb-4">
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+            >
+              <CheckCircle2 className="h-16 w-16 text-green-500" />
+            </motion.div>
+          </div>
+
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-2xl">Başarıyla Gönderildi!</DialogTitle>
+            <DialogDescription className="mt-2">
+              Yatırım talebiniz başarıyla alındı. Merve hanım en kısa sürede sizinle iletişime geçecektir.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 space-y-2 text-sm text-muted-foreground">
+            <p>📧 E-posta veya SMS aracılığıyla size ulaşılacak</p>
+            <p>📞 Sorularınız için istediğiniz zaman iletişime geçebilirsiniz</p>
+          </div>
+
+          <DialogFooter>
+            <Button
+              className="w-full bg-[#3a6ea5] hover:bg-[#004e98] text-white"
+              onClick={() => setInvestmentSuccessOpen(false)}
+            >
+              Tamamla
             </Button>
           </DialogFooter>
         </DialogContent>
