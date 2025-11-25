@@ -715,7 +715,7 @@ export function Chat() {
                 className="mt-1 h-4 w-4 rounded border-input"
               />
               <label htmlFor="kvkk" className="text-xs text-muted-foreground leading-tight">
-                <a href="#" className="underline hover:text-foreground">KVKK Aydınlatma Metni</a> ve <a href="#" className="underline hover:text-foreground">Açık Rıza Metni</a>'ni okudum, kabul ediyorum.
+                <a href="#" className="underline hover:text-foreground">KVKK Aydınlatma Metni</a> ve <a href="#" className="underline hover:text-foreground">Açık Rıza Metni</a>&apos;ni okudum, kabul ediyorum.
               </label>
             </div>
           </div>

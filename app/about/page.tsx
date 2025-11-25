@@ -91,11 +91,11 @@ export default function About() {
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Kullanıcı deneyimi alanında 10 yılı devirmiş bir ekip olarak, teknoloji değişse de bazı temel doğruların değişmediğini biliyoruz. Ancak yapay zeka (LLM) hayatımıza girdiğinde kendimize şunu sorduk: Bugüne kadar "mecburen" yaptığımız sıkıcı akışları, bu yeni teknolojiyle gerçekten keyifli bir hale getirebilir miyiz?
+            Kullanıcı deneyimi alanında 10 yılı devirmiş bir ekip olarak, teknoloji değişse de bazı temel doğruların değişmediğini biliyoruz. Ancak yapay zeka (LLM) hayatımıza girdiğinde kendimize şunu sorduk: Bugüne kadar &quot;mecburen&quot; yaptığımız sıkıcı akışları, bu yeni teknolojiyle gerçekten keyifli bir hale getirebilir miyiz?
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Beta Space Studio olarak SPK uyumluluk testleri gibi en "çetrefilli" konuyu ele aldık ve bu süreçte neler öğrendiğimizi, neleri önemsediğimizi sizinle paylaşmak istedik.
+            Beta Space Studio olarak SPK uyumluluk testleri gibi en &quot;çetrefilli&quot; konuyu ele aldık ve bu süreçte neler öğrendiğimizi, neleri önemsediğimizi sizinle paylaşmak istedik.
           </p>
 
           {/* Section 1 */}
@@ -108,7 +108,7 @@ export default function About() {
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Geleneksel bankacılık deneyimlerinde en sık gördüğümüz hata, kullanıcının sohbet ederken bir anda "Formu doldurmak için tıklayın" denilerek bambaşka bir sayfaya (redirect) fırlatılmasıdır. Bu, mobil deneyimde dikkati dağıtan ve insanı soğutan bir an. Bizim hedefimiz ise kullanıcının o yapay zeka ile kurduğu diyalog çemberinden hiç çıkmamasıydı.
+            Geleneksel bankacılık deneyimlerinde en sık gördüğümüz hata, kullanıcının sohbet ederken bir anda &quot;Formu doldurmak için tıklayın&quot; denilerek bambaşka bir sayfaya (redirect) fırlatılmasıdır. Bu, mobil deneyimde dikkati dağıtan ve insanı soğutan bir an. Bizim hedefimiz ise kullanıcının o yapay zeka ile kurduğu diyalog çemberinden hiç çıkmamasıydı.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
@@ -116,15 +116,15 @@ export default function About() {
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Akıcı Geçiş:</strong> Form bittiği an, sistem "bekleyin" demeden arka planda hesaplamasını yapıp sonucu getiriyor.
+            <strong className="text-white/90">Akıcı Geçiş:</strong> Form bittiği an, sistem &quot;bekleyin&quot; demeden arka planda hesaplamasını yapıp sonucu getiriyor.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Final:</strong> Ve en önemlisi, yapay zeka işini bitirdiğinde kullanıcıyı boşluğa bırakmıyor; "Benim yetkim buraya kadar, şimdi seni işin uzmanına bağlıyorum" diyerek insani bir köprü kuruyor.
+            <strong className="text-white/90">Final:</strong> Ve en önemlisi, yapay zeka işini bitirdiğinde kullanıcıyı boşluğa bırakmıyor; &quot;Benim yetkim buraya kadar, şimdi seni işin uzmanına bağlıyorum&quot; diyerek insani bir köprü kuruyor.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Buradaki amaç şov yapmak değil; sadece kullanıcının zihnini yoran o "sayfalar arası geçiş" yükünü ortadan kaldırmaktı.
+            Buradaki amaç şov yapmak değil; sadece kullanıcının zihnini yoran o &quot;sayfalar arası geçiş&quot; yükünü ortadan kaldırmaktı.
           </p>
 
           {/* Section 2 */}
@@ -133,7 +133,7 @@ export default function About() {
           </h2>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Karşımızdakinin bir yapay zeka olduğunu biliyoruz, kullanıcı da biliyor. Bu yüzden "insan taklidi" yapmaya çalışmak yerine, "nazik bir asistan" hissiyatı yaratmaya odaklandık.
+            Karşımızdakinin bir yapay zeka olduğunu biliyoruz, kullanıcı da biliyor. Bu yüzden &quot;insan taklidi&quot; yapmaya çalışmak yerine, &quot;nazik bir asistan&quot; hissiyatı yaratmaya odaklandık.
           </p>
 
           <video
@@ -167,11 +167,11 @@ export default function About() {
           </h2>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Bireysel yatırım ciddi bir iştir ve kullanıcı arayüzü de bu ciddiyeti "elit" bir sakinlikle yansıtmalı. Burada "Generative UI" dediğimiz kavramı, sırf havalı olsun diye değil, kullanıcıyı rahat hissettirmek için kullandık.
+            Bireysel yatırım ciddi bir iştir ve kullanıcı arayüzü de bu ciddiyeti &quot;elit&quot; bir sakinlikle yansıtmalı. Burada &quot;Generative UI&quot; dediğimiz kavramı, sırf havalı olsun diye değil, kullanıcıyı rahat hissettirmek için kullandık.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Metinlerin ekrana bir anda "küt" diye düşmesi yerine, daha doğal bir akış kurguladık:
+            Metinlerin ekrana bir anda &quot;küt&quot; diye düşmesi yerine, daha doğal bir akış kurguladık:
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
@@ -205,11 +205,11 @@ export default function About() {
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Mevcut senaryolarda potansiyel müşteri, ruhsuz bir form doldurur ve karşılığında kuru bir "Teşekkürler, sizi arayacağız" mesajı alır. Çoğu müşteri adayı bu noktada soğur ve kopar.
+            Mevcut senaryolarda potansiyel müşteri, ruhsuz bir form doldurur ve karşılığında kuru bir &quot;Teşekkürler, sizi arayacağız&quot; mesajı alır. Çoğu müşteri adayı bu noktada soğur ve kopar.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Bizim kurguladığımız bu deneyimde ise kullanıcı, sorulara cevap verdikçe karşılığını anında alıyor. Kendi risk profilini görüyor, ona uygun ürünleri yapay zeka ile birlikte keşfediyor. Yani müşteri temsilcisi daha telefonu açmadan, kullanıcı zaten ürünle tanışmış ve ısınmış oluyor. Bu da sadece "form doldurtmak" değil, müşteriyi gerçekten kazanmak (acquisition) anlamına geliyor.
+            Bizim kurguladığımız bu deneyimde ise kullanıcı, sorulara cevap verdikçe karşılığını anında alıyor. Kendi risk profilini görüyor, ona uygun ürünleri yapay zeka ile birlikte keşfediyor. Yani müşteri temsilcisi daha telefonu açmadan, kullanıcı zaten ürünle tanışmış ve ısınmış oluyor. Bu da sadece &quot;form doldurtmak&quot; değil, müşteriyi gerçekten kazanmak (acquisition) anlamına geliyor.
           </p>
 
           <video

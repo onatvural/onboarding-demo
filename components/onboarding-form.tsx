@@ -216,7 +216,7 @@ export function OnboardingForm({ onSubmit, isProcessing }: OnboardingFormProps) 
                 <FormItem className="space-y-3">
                   <div className="flex items-center gap-2">
                     <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                      3. Toplam varlığın 1 milyon TL'nin üzerinde mi?
+                      3. Toplam varlığın 1 milyon TL&apos;nin üzerinde mi?
                     </h4>
                     <Tooltip>
                       <TooltipTrigger asChild>
