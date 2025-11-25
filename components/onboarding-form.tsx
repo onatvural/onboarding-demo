@@ -21,24 +21,12 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 
 const formSchema = z.object({
-  vade: z.string({
-    required_error: "Lütfen yatırım sürenizi seçin",
-  }),
-  urun: z.string({
-    required_error: "Lütfen yatırım ürününüzü seçin",
-  }),
-  nitelikli: z.string({
-    required_error: "Lütfen varlık durumunuzu belirtin",
-  }),
-  nakit: z.string({
-    required_error: "Lütfen likidite ihtiyacınızı seçin",
-  }),
-  karakter: z.string({
-    required_error: "Lütfen risk karakterinizi seçin",
-  }),
-  ilgi: z.string({
-    required_error: "Lütfen ilgi alanınızı belirtin",
-  }),
+  vade: z.string().min(1, "Lütfen yatırım sürenizi seçin"),
+  urun: z.string().min(1, "Lütfen yatırım ürününüzü seçin"),
+  nitelikli: z.string().min(1, "Lütfen varlık durumunuzu belirtin"),
+  nakit: z.string().min(1, "Lütfen likidite ihtiyacınızı seçin"),
+  karakter: z.string().min(1, "Lütfen risk karakterinizi seçin"),
+  ilgi: z.string().min(1, "Lütfen ilgi alanınızı belirtin"),
 })
 
 type FormData = z.infer<typeof formSchema>
