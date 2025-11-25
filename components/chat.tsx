@@ -65,15 +65,15 @@ export function Chat() {
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visualViewport) return;
 
+    const viewport = window.visualViewport;
+
     const handleViewportResize = () => {
-      if (window.visualViewport) {
-        const currentKeyboardHeight = window.innerHeight - window.visualViewport.height;
-        setKeyboardHeight(currentKeyboardHeight > 0 ? currentKeyboardHeight : 0);
-      }
+      const currentKeyboardHeight = window.innerHeight - viewport.height;
+      setKeyboardHeight(currentKeyboardHeight > 0 ? currentKeyboardHeight : 0);
     };
 
-    window.visualViewport.addEventListener('resize', handleViewportResize);
-    return () => window.visualViewport.removeEventListener('resize', handleViewportResize);
+    viewport.addEventListener('resize', handleViewportResize);
+    return () => viewport.removeEventListener('resize', handleViewportResize);
   }, []);
 
   const scrollToBottom = () => {
