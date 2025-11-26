@@ -666,7 +666,7 @@ export function Chat() {
 
           {/* 2. FORM SECTION - Action area */}
           <div className="py-4 space-y-3">
-            <h3 className="font-medium text-sm">Hemen Başlayın</h3>
+            <h3 className="font-medium text-sm">Formu doldurun, sizi en kısa sürede arayalım</h3>
 
             <div className="space-y-2">
               <div className="relative">

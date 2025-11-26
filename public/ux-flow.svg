@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <!-- Google Fonts -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&amp;display=swap');
+
+      .box-label {
+        font-family: 'Newsreader', Georgia, serif;
+        font-size: 13px;
+        font-weight: 600;
+        fill: #E5E5E5;
+        text-anchor: middle;
+      }
+
+      .subtitle {
+        font-family: 'Newsreader', Georgia, serif;
+        font-size: 10px;
+        fill: #888;
+        text-anchor: middle;
+      }
+    </style>
+
+    <!-- Glow filter for active state -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Box gradient backgrounds -->
+    <linearGradient id="boxGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a2a2a"/>
+      <stop offset="100%" stop-color="#1f1f1f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#0f0f0f"/>
+
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  </pattern>
+  <rect width="800" height="600" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- Connection Lines (5 steps = 4 lines) -->
+  <g id="connections">
+    <line x1="120" y1="300" x2="200" y2="300" stroke="#444" stroke-width="2"/>
+    <line x1="280" y1="300" x2="360" y2="300" stroke="#444" stroke-width="2"/>
+    <line x1="440" y1="300" x2="520" y2="300" stroke="#444" stroke-width="2"/>
+    <line x1="600" y1="300" x2="680" y2="300" stroke="#444" stroke-width="2"/>
+  </g>
+
+  <!-- Step 1: İsim Alma -->
+  <g id="step1">
+    <rect x="40" y="260" width="80" height="80" rx="12" fill="url(#boxGradient)" stroke="#333" stroke-width="2">
+      <animate attributeName="stroke" values="#333;#F59E0B;#333;#333;#333;#333" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+      <animate attributeName="stroke-width" values="2;3;2;2;2;2" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <rect x="40" y="260" width="80" height="80" rx="12" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0" filter="url(#glow)">
+      <animate attributeName="opacity" values="0;0.6;0;0;0;0" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <text x="80" y="305" class="box-label">İsim</text>
+    <text x="80" y="320" class="subtitle">Tanışma</text>
+  </g>
+
+  <!-- Step 2: Inline Form -->
+  <g id="step2">
+    <rect x="200" y="260" width="80" height="80" rx="12" fill="url(#boxGradient)" stroke="#333" stroke-width="2">
+      <animate attributeName="stroke" values="#333;#333;#F59E0B;#333;#333;#333" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+      <animate attributeName="stroke-width" values="2;2;3;2;2;2" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <rect x="200" y="260" width="80" height="80" rx="12" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0" filter="url(#glow)">
+      <animate attributeName="opacity" values="0;0;0.6;0;0;0" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <text x="240" y="305" class="box-label">Form</text>
+    <text x="240" y="320" class="subtitle">6 Soru</text>
+  </g>
+
+  <!-- Step 3: Analiz -->
+  <g id="step3">
+    <rect x="360" y="260" width="80" height="80" rx="12" fill="url(#boxGradient)" stroke="#333" stroke-width="2">
+      <animate attributeName="stroke" values="#333;#333;#333;#F59E0B;#333;#333" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+      <animate attributeName="stroke-width" values="2;2;2;3;2;2" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <rect x="360" y="260" width="80" height="80" rx="12" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0" filter="url(#glow)">
+      <animate attributeName="opacity" values="0;0;0;0.6;0;0" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <text x="400" y="305" class="box-label">Analiz</text>
+    <text x="400" y="320" class="subtitle">Risk Profili</text>
+  </g>
+
+  <!-- Step 4: Sonuçlar -->
+  <g id="step4">
+    <rect x="520" y="260" width="80" height="80" rx="12" fill="url(#boxGradient)" stroke="#333" stroke-width="2">
+      <animate attributeName="stroke" values="#333;#333;#333;#333;#F59E0B;#333" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+      <animate attributeName="stroke-width" values="2;2;2;2;3;2" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <rect x="520" y="260" width="80" height="80" rx="12" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0" filter="url(#glow)">
+      <animate attributeName="opacity" values="0;0;0;0;0.6;0" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <text x="560" y="305" class="box-label">Sonuç</text>
+    <text x="560" y="320" class="subtitle">Öneriler</text>
+  </g>
+
+  <!-- Step 5: Uzman Devri (green success) -->
+  <g id="step5">
+    <rect x="680" y="260" width="80" height="80" rx="12" fill="url(#boxGradient)" stroke="#333" stroke-width="2">
+      <animate attributeName="stroke" values="#333;#333;#333;#333;#333;#22C55E" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+      <animate attributeName="stroke-width" values="2;2;2;2;2;3" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <rect x="680" y="260" width="80" height="80" rx="12" fill="none" stroke="#22C55E" stroke-width="2" opacity="0" filter="url(#glow)">
+      <animate attributeName="opacity" values="0;0;0;0;0;0.6" dur="10.5s" repeatCount="indefinite" keyTimes="0;0.167;0.333;0.5;0.667;1"/>
+    </rect>
+    <text x="720" y="305" class="box-label">Uzman</text>
+    <text x="720" y="320" class="subtitle">İnsan Devri</text>
+  </g>
+
+  <!-- Title -->
+  <text x="400" y="190" font-family="'Newsreader', Georgia, serif" font-size="22" font-weight="600" fill="#E5E5E5" text-anchor="middle">Kullanıcı Deneyimi</text>
+
+  <!-- Decorative corner elements -->
+  <path d="M 30 30 L 30 60 M 30 30 L 60 30" stroke="#333" stroke-width="2" fill="none"/>
+  <path d="M 770 30 L 770 60 M 770 30 L 740 30" stroke="#333" stroke-width="2" fill="none"/>
+  <path d="M 30 570 L 30 540 M 30 570 L 60 570" stroke="#333" stroke-width="2" fill="none"/>
+  <path d="M 770 570 L 770 540 M 770 570 L 740 570" stroke="#333" stroke-width="2" fill="none"/>
+</svg>

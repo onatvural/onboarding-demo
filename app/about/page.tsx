@@ -3,29 +3,28 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ArrowLeft, Mail } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { ShootingStars } from '@/components/ui/shooting-stars';
 import { StarsBackground } from '@/components/ui/stars-background';
-import Lottie from 'lottie-react';
-import scrollAnimation from '@/public/scroll-down.json';
 
 export default function About() {
   const [isMounted, setIsMounted] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Star Background - client only */}
+      {isMounted && (
+        <>
+          <StarsBackground className="fixed inset-0" />
+          <ShootingStars className="fixed inset-0" />
+        </>
+      )}
+
       {/* Back Button */}
       <div className="fixed top-4 left-4 z-10">
         <Link href="/">
@@ -35,49 +34,8 @@ export default function About() {
         </Link>
       </div>
 
-      {/* Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
-        {/* Star Background - client only */}
-        {isMounted && (
-          <>
-            <StarsBackground className="absolute inset-0" />
-            <ShootingStars className="absolute inset-0" />
-          </>
-        )}
-
-        {/* Parallax container */}
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center"
-          style={{ transform: `translateY(${scrollY * 0.5}px)` }}
-        >
-          {/* Text with blur fade-in */}
-          <motion.h2
-            initial={{ opacity: 0, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            transition={{ duration: 1, ease: 'easeOut' }}
-            className="text-2xl sm:text-4xl font-medium text-white text-center px-6"
-          >
-            Hoş Geldin 👋, ismini öğrenebilir miyim?
-          </motion.h2>
-        </div>
-
-        {/* Scroll down indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 4.5, times: [0, 0.33, 0.67, 1], delay: 1.5 }}
-          className="absolute bottom-16 left-1/2 -translate-x-1/2"
-        >
-          <Lottie
-            animationData={scrollAnimation}
-            loop={true}
-            className="w-24 h-24"
-          />
-        </motion.div>
-      </section>
-
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 py-16 sm:py-24">
+      <div className="relative z-[1] max-w-4xl mx-auto px-6 py-16 sm:py-24 pt-20 sm:pt-24">
         <article className="space-y-6">
 
           {/* Main Title */}
@@ -87,53 +45,31 @@ export default function About() {
 
           {/* Introduction */}
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Form doldurmak müşteri kaybettirir. Peki ya sohbet?
+            Teknoloji ne kadar gelişirse gelişsin, insan psikolojisinin temel beklentileri değişmiyor: Anlaşılmak, saygı görmek ve hedefe en az zahmetle ulaşmak. Beta Space Studio olarak yapay zeka (LLM) projelerine yaklaşımımızın merkezinde de bu yatıyor. Bizim için nihai amaç, sadece &quot;yeni bir teknolojiyi entegre etmek&quot; değil; yıllardır kanıksadığımız o sıkıcı, bürokratik ve &quot;mecburen yapılan&quot; süreçleri, kullanıcı ile marka arasında güven inşa eden değerli bir diyaloğa dönüştürmek.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Kullanıcı deneyimi alanında 10 yılı devirmiş bir ekip olarak, teknoloji değişse de bazı temel doğruların değişmediğini biliyoruz. Ancak yapay zeka (LLM) hayatımıza girdiğinde kendimize şunu sorduk: Bugüne kadar &quot;mecburen&quot; yaptığımız sıkıcı akışları, bu yeni teknolojiyle gerçekten keyifli bir hale getirebilir miyiz?
+            SPK uyumluluk testleri gibi en çetrefilli süreçleri ele alırken hayal ettiğimiz dünya çok net: Yazılımın kullanıcıya ne yapması gerektiğini dikte eden soğuk bir bürokrat gibi değil; aksine sessiz, yetkin ve kullanıcının önünü açan nazik bir asistan gibi davrandığı bir deneyim.
           </p>
 
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            Beta Space Studio olarak SPK uyumluluk testleri gibi en &quot;çetrefilli&quot; konuyu ele aldık ve bu süreçte neler öğrendiğimizi, neleri önemsediğimizi sizinle paylaşmak istedik.
-          </p>
+          {/* UX Flow Diagram */}
+          <img
+            src="/ux-flow.svg"
+            alt="Kullanıcı Deneyimi Akış Şeması"
+            className="w-screen relative left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 sm:w-full rounded-none sm:rounded-lg my-8"
+          />
 
           {/* Section 1 */}
           <h2 className="text-[17px] sm:text-[19px] font-semibold mt-10">
-            Kullanıcıyı Akıştan Koparmamak
+            Akışta Kalmak
           </h2>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Probleme yaklaşırken masaya koyduğumuz ilk kural, bir UX tasarımcısı olarak belki de en büyük hassasiyetimizdi: Kullanıcıyı akıştan koparma.
+            Geleneksel dijital deneyimlerde en sık gördüğümüz hata, kullanıcının bağlamdan koparılmasıdır. Bir sohbetin ortasında veya bir işlemin en kritik anında &quot;Formu doldurmak için tıklayın&quot; diyerek kullanıcıyı bambaşka bir sayfaya yönlendirmek, kullanıcının dikkatini dağıtmak ve yolculukta kaybolmasına ihtimal vermektir.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Geleneksel bankacılık deneyimlerinde en sık gördüğümüz hata, kullanıcının sohbet ederken bir anda &quot;Formu doldurmak için tıklayın&quot; denilerek bambaşka bir sayfaya (redirect) fırlatılmasıdır. Bu, mobil deneyimde dikkati dağıtan ve insanı soğutan bir an. Bizim hedefimiz ise kullanıcının o yapay zeka ile kurduğu diyalog çemberinden hiç çıkmamasıydı.
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Her Şey Sohbetin İçinde:</strong> SPK formlarını harici bir sayfa yerine, mesaj balonlarının arasına, sanki sohbetin doğal bir parçasıymış gibi (Inline) yerleştirdik.
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Akıcı Geçiş:</strong> Form bittiği an, sistem &quot;bekleyin&quot; demeden arka planda hesaplamasını yapıp sonucu getiriyor.
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Final:</strong> Ve en önemlisi, yapay zeka işini bitirdiğinde kullanıcıyı boşluğa bırakmıyor; &quot;Benim yetkim buraya kadar, şimdi seni işin uzmanına bağlıyorum&quot; diyerek insani bir köprü kuruyor.
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            Buradaki amaç şov yapmak değil; sadece kullanıcının zihnini yoran o &quot;sayfalar arası geçiş&quot; yükünü ortadan kaldırmaktı.
-          </p>
-
-          {/* Section 2 */}
-          <h2 className="text-[17px] sm:text-[19px] font-semibold mt-10">
-            İnsan Taklidi Yapmadan İnsancıl Olmak
-          </h2>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            Karşımızdakinin bir yapay zeka olduğunu biliyoruz, kullanıcı da biliyor. Bu yüzden &quot;insan taklidi&quot; yapmaya çalışmak yerine, &quot;nazik bir asistan&quot; hissiyatı yaratmaya odaklandık.
+            Bizim tasarım felsefemizde, geçişken şekilde tek bir alanda kullanıcının tüm adımlarını gerçekleştirmesi öncelikli hedeftir. SPK formlarını harici bir sayfa yerine, mesajların arasına, sohbetin doğal bir parçasıymış gibi (Inline) yerleştirmemizin sebebi budur. Kullanıcıyı sayfalar arasında savurmak yerine, her şeyi tek bir ekranda çözmek, zihinsel yükü (bilişsel sürtünmeyi) ortadan kaldırır. Eğer tasarladığımız arayüz, kullanıcının daha az düşünmesini ve hedefine daha zahmetsizce ulaşmasını sağlıyorsa, doğru yoldayız demektir.
           </p>
 
           <video
@@ -145,45 +81,33 @@ export default function About() {
             className="w-screen relative left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 sm:w-full rounded-none sm:rounded-lg"
           />
 
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            Burada küçük ama deneyimi yumuşatan detaylar devreye girdi:
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">İsim Hafızası:</strong> Sohbet başladığında isminizi öğrenip, ikinci cümlesinde size isminizle hitap etmesi basit ama etkili bir bağ kurma yöntemi.
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Haddini Bilmek:</strong> Yapay zeka size önerileri sunduktan sonra, yatırım tavsiyesi vermeye kalkışmıyor. Tam tersine, konuyu bir insan temsilciye devrederek güven tazeliyor.
-          </p>
-
-          <p className="text-[15px] text-white/70 leading-relaxed">
-            Bu yaklaşım, teknolojiyi soğuk bir duvar olmaktan çıkarıp, insan uzmanlığına giden yolda yardımcı bir aracıya dönüştürüyor.
-          </p>
-
-          {/* Section 3 */}
+          {/* Section 2 */}
           <h2 className="text-[17px] sm:text-[19px] font-semibold mt-10">
-            Generative UI: Gözü Yormayan, Sakin Bir Arayüz
+            Herkes Sohbet İstemez
           </h2>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Bireysel yatırım ciddi bir iştir ve kullanıcı arayüzü de bu ciddiyeti &quot;elit&quot; bir sakinlikle yansıtmalı. Burada &quot;Generative UI&quot; dediğimiz kavramı, sırf havalı olsun diye değil, kullanıcıyı rahat hissettirmek için kullandık.
+            Ancak burada romantik bir hataya düşmemek ve dürüst olmak gerekir: Her kullanıcı &quot;sohbet etmeye&quot; bayılmaz. Deneyim beklentisi herkes için aynı değildir.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Metinlerin ekrana bir anda &quot;küt&quot; diye düşmesi yerine, daha doğal bir akış kurguladık:
+            SPK formları gibi standart prosedürlerde, konuya hakim ve hızlıca işlem yapmak isteyen bir kullanıcı için, yapay zekanın her soruyu tek tek, yavaş yavaş sormasını beklemek bir işkenceye dönüşebilir. 20 kutucuğu hızlıca &quot;tık-tık-tık&quot; diye işaretlemek, bazen en akıllı sohbetten bile 10 kat daha verimlidir.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Akışkanlık:</strong> Mesajlar ve kartlar, ekrana yumuşak geçişlerle (fade-in) geliyor.
+            Bu yüzden biz, Generative UI kavramını &quot;Hibrit&quot; bir yapıda kullanmayı tercih ediyoruz:
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            <strong className="text-white/90">Yazı Ritmi:</strong> Cevaplar anında belirmiyor; sanki o an sizin için düşünülüp yazılıyormuş gibi hafif bir daktilo efekti ve bulanıklık (blur) ile netleşiyor.
+            <strong className="text-white/90">Rehberlik İsteyen Kullanıcı:</strong> Adım adım, sohbet eşliğinde ilerler, neyi neden seçtiğini anlar ve güvende hisseder.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Bu detaylar, kullanıcının aceleye getirilmiş bir form doldurduğu hissini değil; kendisine özel, özenilmiş bir hizmet aldığı hissini destekliyor.
+            <strong className="text-white/90">Hız İsteyen Kullanıcı:</strong> Sohbetin içinde beliren akıllı kartlar sayesinde, çoklu seçimleri tek seferde yapar veya &quot;Varsayılanları Seç&quot; gibi kısayollarla süreci hızla tamamlar.
+          </p>
+
+          <p className="text-[15px] text-white/70 leading-relaxed">
+            Yani amacımız kullanıcıyı sadece bir sohbet botuna mahkum etmek değil; onun hız tercihine ve o anki ruh haline saygı duyan esnek bir yapı sunmaktır.
           </p>
 
           <video
@@ -195,21 +119,38 @@ export default function About() {
             className="w-screen relative left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 sm:w-full rounded-none sm:rounded-lg"
           />
 
-          {/* Section 4 */}
+          {/* Section 3 */}
           <h2 className="text-[17px] sm:text-[19px] font-semibold mt-10">
-            Günün Sonunda Ne İşe Yarıyor?
+            Güven, Dürüstlükten Gelir
           </h2>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Peki, bu kadar tasarım eforu bir finans kuruluşu için ne anlama geliyor? Cevap aslında basit: Müşteriyi kapıda kaybetmemek.
+            Yazılımın &quot;nazik&quot; olması, insan taklidi yapması demek değildir. Kullanıcı karşısındakinin bir yapay zeka olduğunu bilir. Bu yüzden sahte bir insan profili çizmek yerine, &quot;haddini bilen&quot; ve güven veren bir asistan profili çizmek çok daha değerlidir.
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Mevcut senaryolarda potansiyel müşteri, ruhsuz bir form doldurur ve karşılığında kuru bir &quot;Teşekkürler, sizi arayacağız&quot; mesajı alır. Çoğu müşteri adayı bu noktada soğur ve kopar.
+            Kurguladığımız yapıda yapay zeka, analizleri sunduktan sonra yatırım tavsiyesi vermeye kalkışmaz. &quot;Benim yetkim buraya kadar, şimdi seni işin gerçek uzmanına bağlıyorum&quot; diyerek insani bir köprü kurar. Bu dürüstlük, teknolojiyi soğuk bir duvar olmaktan çıkarıp, insan uzmanlığına giden yolda güvenilir bir aracıya dönüştürür.
+          </p>
+
+          {/* Section 4 */}
+          <h2 className="text-[17px] sm:text-[19px] font-semibold mt-10">
+            Tasarımın İşletmeye Olan Gerçek Katkısı
+          </h2>
+
+          <p className="text-[15px] text-white/70 leading-relaxed">
+            Peki, tüm bu &quot;nazik arayüz&quot;, &quot;hibrit yapı&quot; ve &quot;akışkan deneyim&quot; bir finans kuruluşu için günün sonunda ne ifade eder?
           </p>
 
           <p className="text-[15px] text-white/70 leading-relaxed">
-            Bizim kurguladığımız bu deneyimde ise kullanıcı, sorulara cevap verdikçe karşılığını anında alıyor. Kendi risk profilini görüyor, ona uygun ürünleri yapay zeka ile birlikte keşfediyor. Yani müşteri temsilcisi daha telefonu açmadan, kullanıcı zaten ürünle tanışmış ve ısınmış oluyor. Bu da sadece &quot;form doldurtmak&quot; değil, müşteriyi gerçekten kazanmak (acquisition) anlamına geliyor.
+            Cevap çok nettir: Müşteri Kazanımı (Acquisition).
+          </p>
+
+          <p className="text-[15px] text-white/70 leading-relaxed">
+            UX bizim için sadece &quot;güzel ekranlar&quot; tasarlamak değil, iş hedeflerine doğrudan hizmet eden stratejik bir araçtır. Mevcut senaryolarda müşteri adayı ruhsuz bir formu doldurup &quot;Sizi arayacağız&quot; mesajıyla boşluğa düşerken; bizim kurgumuzda kullanıcı, satış ekibi daha telefonu eline almadan kendi risk profilini görmüş, ürünü tanımış ve markaya ısınmış oluyor.
+          </p>
+
+          <p className="text-[15px] text-white/70 leading-relaxed">
+            Satış ekibi müşteriyi aradığında, sıfırdan ikna etmeye çalışmıyor; zaten ikna olmuş, ne istediğini bilen bir kullanıcıyla tanışıyor. İşte bu, sadece bir form doldurma işini çözmek değil; işletme için ölçülebilir, gerçek bir değer yaratmaktır.
           </p>
 
           <video
@@ -222,43 +163,36 @@ export default function About() {
           />
 
           {/* CTA Button */}
-          <div className="flex justify-center !mt-[40px]">
+          <div className="flex justify-center !mt-[80px]">
             <Link href="/chat">
-              <Button variant="secondary" size="lg" className="text-base">
+              <Button size="lg" className="text-base bg-white text-black hover:bg-white/90">
                 Demoyu Dene
               </Button>
             </Link>
           </div>
 
           {/* Beta Space Studio Section */}
-          <section className="!mt-[120px] -mx-6 sm:-mx-0 px-6 py-16 bg-gradient-to-b from-white/5 to-transparent rounded-none sm:rounded-2xl">
-            <div className="max-w-2xl mx-auto text-center space-y-8">
-              {/* Headline */}
-              <h2 className="text-xl sm:text-2xl font-semibold text-white">
-                Beta Space Studio ile yapay zeka deneyimini bir üst seviyeye çıkarın
-              </h2>
-
-              {/* Tagline */}
-              <p className="text-white/60">
-                İnsan odaklı yapay zeka deneyimlerini tasarlıyor ve inşa ediyoruz.
-              </p>
-
-              {/* Value Propositions */}
-              <div className="space-y-4 text-white/80">
-                <p>Yapay zeka deneyiminde <span className="underline underline-offset-4">kullanıcı memnuniyetini 10x</span> arttırın</p>
-                <p><span className="underline underline-offset-4">Marka deneyiminizi ve kalitenizi</span> yapay zeka deneyimine yansıtın</p>
-                <p>Müşteri kazanım oranlarınızı <span className="underline underline-offset-4">kolayca</span> arttırın</p>
-              </div>
-
-              {/* Email Contact */}
-              <a
-                href="mailto:info@betaspacestudio.com"
-                className="inline-block text-white/90 hover:text-white underline underline-offset-4 transition-colors"
-              >
-                info@betaspacestudio.com
-              </a>
-            </div>
-          </section>
+          <div className="!mt-[120px]">
+            <Card className="bg-white/[0.03] border-white/10 backdrop-blur-sm py-8 sm:py-12">
+              <CardHeader className="text-center pb-4 px-8 sm:px-12">
+                <CardTitle className="text-xl sm:text-2xl text-white">
+                  Beta Space Studio ile yapay zeka deneyimini bir üst seviyeye çıkarın
+                </CardTitle>
+                <CardDescription className="text-white/60 text-[15px] mt-4">
+                  İnsan odaklı, kullanıcı hedeflerine saygılı ve sonuç odaklı deneyimler tasarlıyoruz.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex justify-center pt-6 px-8 sm:px-12">
+                <a
+                  href="mailto:info@betaspacestudio.com"
+                  className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors group"
+                >
+                  <Mail className="h-4 w-4 text-white/50 group-hover:text-white/80 transition-colors" />
+                  <span className="underline underline-offset-4">info@betaspacestudio.com</span>
+                </a>
+              </CardContent>
+            </Card>
+          </div>
         </article>
       </div>
     </div>

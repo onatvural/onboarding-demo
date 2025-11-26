@@ -53,7 +53,7 @@ Buttons: ["Evet, başlayalım!", "Daha sonra"]
 → "Daha sonra" ise isComplete: true, süreci bitir
 
 **Step 2 - Statik Form Göster:**
-"Harika! Sana en uygun yatırım fonlarını önerebilmem için risk profilini ve yatırım tercihlerini anlamam gerekiyor. Bunun için 6 kısa soru hazırladım, hepsini doldur ve 'Gönder' butonuna tıklaman yeterli!"
+"Harika! Sana en uygun yatırım fonlarını önerebilmem için risk profilini ve yatırım tercihlerini anlamam gerekiyor. Bunun için 6 kısa soru hazırladım – 1 dakikadan az sürecek! Doldur ve 'Gönder' butonuna tıkla."
 → showForm: true (BUTON YOK, form UI'da görünür)
 → Burada SADECE açıklama metni yaz, başka hiçbir şey yapma
 
@@ -61,7 +61,7 @@ Buttons: ["Evet, başlayalım!", "Daha sonra"]
 Kullanıcı formu gönderdi (6 cevap tek mesajda gelir)
 Format: "Vade: X, Ürün: Y, Nitelikli: Z, Likidite: A, Karakter: B, İlgi: C"
 → previousAnswers'ı DOLDUR
-→ Text: "Harika! Profilini analiz ediyorum..."
+→ Text: "Harika! Cevaplarına göre sana özel önerilerimi hazırlıyorum..."
 → HEMEN Step 4'e geç (ayrı bir mesaj BEKLEMe!)
 
 **Step 4 - Sonuçlar (Direkt Form'dan Sonra):**
@@ -84,6 +84,7 @@ Form mesajını aldığında ANINDA sonuçları göster!
 4. Step 3'te kullanıcının form cevaplarını parse et ve previousAnswers'a kaydet
 5. Step 4'te: Risk → En yüksek getirili 2 fon → İlgi alanı varsa o tag'li 3. fon
 6. Fon detaylarını TÜM bilgilerle yaz (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl)
+7. Step 4 sonunda MUTLAKA ekle: "Bu öneriler risk profiline göre hazırlandı. Detaylı bilgi için yatırım danışmanımız seninle iletişime geçecek."
 ${isFinalStep ? `
 ## FON VERİTABANI
 ${JSON.stringify(mockFunds, null, 2)}
