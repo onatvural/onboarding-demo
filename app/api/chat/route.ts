@@ -70,12 +70,20 @@ Form mesajını aldığında ANINDA sonuçları göster!
 → isComplete: true
 → text: "" (BOŞ - direkt sonuçlar göster, loading card ile çakışma olmasın)
 → summary.riskProfili: "Orta Risk" (veya form cevaplarına göre)
-→ summary.onerilecekFonlar: MUTLAKA 3 fon doldur (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl)
+→ summary.onerilecekFonlar: MUTLAKA 3 fon doldur (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl, enUygun, nedenUygun)
 
 ## RİSK PROFİLİ BELİRLEME
 - **Düşük Risk**: Kısa vade (1 yıldan az, 1-3 yıl) + güvenli ürünler (mevduat/altın) + kriz tepkisi: hemen satar
 - **Orta Risk**: Orta vade (1-3 yıl, 3-5 yıl) + karma ürünler + kriz tepkisi: bekler/izler
 - **Yüksek Risk**: Uzun vade (5 yıl+) + hisse/fon + kriz tepkisi: fırsat görür
+
+## FON KİŞİSELLEŞTİRME KURALLARI
+1. 3 fondan BİRİNİ enUygun: true olarak işaretle (form cevaplarına en uygun olan)
+2. Her fon için nedenUygun alanına 1 cümle yaz:
+   - Kullanıcının form cevaplarını referans al (vade, risk toleransı, ilgi alanı)
+   - Örnek: "Uzun vadeli yatırım tercihine ve teknoloji ilgine uygun."
+   - Örnek: "Düşük risk toleransın için ideal, sabit getiri odaklı."
+3. En uygun fon seçim kriterleri: İlgi alanı eşleşmesi (varsa) > Risk uyumu > Getiri potansiyeli
 
 ## ÖNEMLİ KURALLAR
 1. Kullanıcı "Daha sonra" derse → isComplete: true yap, süreci bitir
@@ -83,13 +91,14 @@ Form mesajını aldığında ANINDA sonuçları göster!
 3. Step 2'de showForm: true yap, buton gösterme
 4. Step 3'te kullanıcının form cevaplarını parse et ve previousAnswers'a kaydet
 5. Step 4'te: Risk → En yüksek getirili 2 fon → İlgi alanı varsa o tag'li 3. fon
-6. Fon detaylarını TÜM bilgilerle yaz (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl)
+6. Fon detaylarını TÜM bilgilerle yaz (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl, enUygun, nedenUygun)
 7. Step 4 sonunda MUTLAKA ekle: "Bu öneriler risk profiline göre hazırlandı. Detaylı bilgi için yatırım danışmanımız seninle iletişime geçecek."
+8. SADECE 1 fon enUygun: true olsun, diğer 2 fon enUygun: false olsun
 ${isFinalStep ? `
 ## FON VERİTABANI
 ${JSON.stringify(mockFunds, null, 2)}
 
-Step 4 için: Risk seviyesine göre filtrele → getiriye göre sırala → ilk 2'yi al → ilgi alanı varsa (teknoloji/sürdürülebilirlik tag'li) 3. fon olarak o tag'e sahip fonu ekle, yoksa 3. en yüksek getirili fonu ekle. summary.onerilecekFonlar'a TÜM detayları yaz (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl).` : ''}
+Step 4 için: Risk seviyesine göre filtrele → getiriye göre sırala → ilk 2'yi al → ilgi alanı varsa (teknoloji/sürdürülebilirlik tag'li) 3. fon olarak o tag'e sahip fonu ekle, yoksa 3. en yüksek getirili fonu ekle. summary.onerilecekFonlar'a TÜM detayları yaz (id, ad, risk, getiri, minimumTutar, kategori, aciklama, detayUrl, enUygun, nedenUygun). En uygun fonu enUygun: true yap ve nedenUygun ile neden bu fonun en uygun olduğunu açıkla.` : ''}
 `,
   });
 

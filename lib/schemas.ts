@@ -26,6 +26,8 @@ export const conversationSchema = z.object({
       kategori: z.string(),
       aciklama: z.string(),
       detayUrl: z.string(),
+      enUygun: z.boolean().optional(),
+      nedenUygun: z.string().optional(),
     })),
   }).optional(),
 });

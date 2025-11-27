@@ -28,6 +28,7 @@ import { OnboardingForm } from '@/components/onboarding-form';
 import { LoadingCard } from '@/components/loading-card';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import { StreamingTypewriter } from '@/components/ui/streaming-typewriter';
+import { cn } from '@/lib/utils';
 import type { ConversationObject } from '@/lib/schemas';
 import { GeistMono } from 'geist/font/mono';
 
@@ -512,8 +513,17 @@ export function Chat() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.4 + fonIndex * 0.1 }}
+                            className="relative"
                           >
-                            <Card className="flex flex-col h-[380px] p-4">
+                            {fon.enUygun && (
+                              <Badge className="absolute -top-2 -right-2 z-10 bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0 shadow-lg">
+                                En Uygun
+                              </Badge>
+                            )}
+                            <Card className={cn(
+                              "flex flex-col h-[380px] p-4",
+                              fon.enUygun && "border-2 border-cyan-400 ring-2 ring-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
+                            )}>
                               <div className="flex items-start justify-between gap-2 mb-1">
                                 {fon.ad && <CardTitle className="text-base leading-tight">{fon.ad}</CardTitle>}
                                 {fon.risk && (
@@ -564,6 +574,20 @@ export function Chat() {
                           </motion.div>
                         ))}
                       </div>
+
+                      {/* Why these funds? Explanations */}
+                      {message.object.summary.onerilecekFonlar.some(f => f.nedenUygun) && (
+                        <div className="mt-6 space-y-2">
+                          <h4 className="text-sm font-medium text-muted-foreground mb-3">Neden bu fonlar önerildi?</h4>
+                          {message.object.summary.onerilecekFonlar.map((fon) => (
+                            fon.nedenUygun && (
+                              <p key={`reason-${fon.id}`} className="text-sm text-muted-foreground">
+                                <span className="font-medium text-foreground">{fon.ad}:</span> {fon.nedenUygun}
+                              </p>
+                            )
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </motion.div>

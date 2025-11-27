@@ -15,7 +15,7 @@ export default function Home() {
           Onboarding Demo
         </Badge>
         <h1 className="text-4xl md:text-6xl lg:text-7xl text-white font-bold text-center">
-          Yatırım Yolculuğunuz Buradan Başlıyor
+          Yapay Zeka Destekli Fon Seçim Deneyimi
         </h1>
         <p className="text-base md:text-xl text-white/80 text-center max-w-2xl">
           Birkaç soruyla yatırımcı profilinizi oluşturun ve kişiselleştirilmiş fon önerilerinize ulaşın
