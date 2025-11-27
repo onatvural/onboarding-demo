@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { ArrowUp, Square, User, Plus, ExternalLink, ArrowLeft, CheckCircle2, TrendingUp, Shield, BadgeCheck } from 'lucide-react';
+import { ArrowUp, Square, User, Plus, ExternalLink, ArrowLeft, CheckCircle2, TrendingUp, Shield, BadgeCheck, BookOpen } from 'lucide-react';
 import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -800,6 +800,16 @@ export function Chat() {
           <div className="py-4 space-y-2 text-sm text-muted-foreground">
             <p>📧 E-posta veya SMS aracılığıyla size ulaşılacak</p>
             <p>📞 Sorularınız için istediğiniz zaman iletişime geçebilirsiniz</p>
+          </div>
+
+          {/* Blog CTA */}
+          <div className="pt-4 border-t border-border">
+            <Link href="/about" onClick={() => setInvestmentSuccessOpen(false)}>
+              <Button variant="secondary" className="w-full">
+                <BookOpen className="mr-2 h-4 w-4" />
+                Bu deneyimi nasıl tasarladık? Şimdi oku
+              </Button>
+            </Link>
           </div>
 
           <DialogFooter>
